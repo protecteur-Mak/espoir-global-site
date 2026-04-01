@@ -1,0 +1,58 @@
+export const COINS = [
+  {
+    name: "TRX",
+    full_name: "Tron",
+    network: "TRX",
+    currency_code: "trx",
+    image: "https://nowpayments.io/images/coins/trx.svg",
+  },
+  {
+    name: "USDT",
+    full_name: "Tether USD (Tron)",
+    network: "TRX",
+    currency_code: "usdttrc20",
+    image: "https://nowpayments.io/images/coins/usdttrc20.svg",
+  },
+  {
+    name: "USDT",
+    full_name: "Tether USD (Ethereum)",
+    network: "ETH",
+    currency_code: "usdterc20",
+    image: "https://nowpayments.io/images/coins/usdterc20.svg",
+  },
+  {
+    name: "BTC",
+    full_name: "Bitcoin",
+    network: "",
+    currency_code: "btc",
+    image: "https://nowpayments.io/images/coins/btc.svg",
+  },
+  {
+    name: "SOL",
+    full_name: "Solana",
+    network: "",
+    currency_code: "sol",
+    image: "https://nowpayments.io/images/coins/sol.svg",
+  },
+  {
+    name: "LTC",
+    full_name: "Litecoin",
+    network: "",
+    currency_code: "ltc",
+    image: "https://nowpayments.io/images/coins/ltc.svg",
+  },
+  {
+    name: "XRP",
+    full_name: "Ripple",
+    network: "",
+    currency_code: "xrp",
+    image: "https://nowpayments.io/images/coins/xrp.svg",
+  },
+  {
+    name: "BUSD",
+    full_name: "Binance USD",
+    network: "BSC",
+    currency_code: "busd",
+    image: "https://nowpayments.io/images/coins/busd.svg",
+  },
+];
