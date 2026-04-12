@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header"
 import { BottomNavigation } from "@/components/layout/bottom-navigation"
 import { HeroSection } from "@/components/sections/hero"
+import { CtaVideoSection } from "@/components/sections/cta-video"
 import { MissionSection } from "@/components/sections/mission"
 import { ImpactSection } from "@/components/sections/impact"
 import { SupportSection } from "@/components/sections/support"
@@ -13,6 +14,7 @@ export default function HomePage() {
       <Header />
       <main className="pt-20">
         <HeroSection />
+        <CtaVideoSection />
         <MissionSection />
         <ImpactSection />
         <SupportSection />

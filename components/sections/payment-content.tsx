@@ -68,12 +68,12 @@ export function PaymentContent() {
   const [paymentAddress, setPaymentAddress] = useState("");
   const [selectedPayCurrency, setSelectedPayCurrency] = useState<string>("trx");
   const selectedCoin = COINS.find(
-    (c) => c.currency_code === selectedPayCurrency
+    (c) => c.currency_code === selectedPayCurrency,
   );
   const filteredCoins = COINS.filter(
     (coin) =>
       coin.name.toLowerCase().includes(search.toLowerCase()) ||
-      coin.full_name.toLowerCase().includes(search.toLowerCase())
+      coin.full_name.toLowerCase().includes(search.toLowerCase()),
   );
   const [showReview, setShowReview] = useState(false);
 
@@ -119,7 +119,7 @@ export function PaymentContent() {
       const payment = await createPayment(
         depositAmount,
         selectedPayCurrency,
-        paymentId
+        paymentId,
       );
 
       if (!payment || !payment.pay_address) {
@@ -191,7 +191,7 @@ export function PaymentContent() {
 
   const handlePayment = async (
     method: string,
-    channels?: "MOBILE_MONEY" | "CREDIT_CARD" | "WALLET" | "ALL"
+    channels?: "MOBILE_MONEY" | "CREDIT_CARD" | "WALLET" | "ALL",
   ) => {
     try {
       const paymentData = {
@@ -226,7 +226,7 @@ export function PaymentContent() {
           description: "Paiement réussi",
         });
         router.push(
-          `/confirmation?method=${method}&amount=${selectedAmount || customAmount}`
+          `/confirmation?method=${method}&amount=${selectedAmount || customAmount}`,
         );
       } else {
         toast({
@@ -331,7 +331,7 @@ export function PaymentContent() {
     }
   }, [searchParams]);
 
-  const predefinedAmounts = [50, 100, 200, 500, 1000];
+  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500];
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -665,7 +665,7 @@ export function PaymentContent() {
                                     const coin = COINS.find(
                                       (c) =>
                                         c.currency_code ===
-                                        paymentResponse.pay_currency
+                                        paymentResponse.pay_currency,
                                     );
                                     return coin ? (
                                       <img
@@ -698,7 +698,7 @@ export function PaymentContent() {
                                   const coin = COINS.find(
                                     (c) =>
                                       c.currency_code ===
-                                      paymentResponse.pay_currency
+                                      paymentResponse.pay_currency,
                                   );
                                   return coin ? (
                                     <>
@@ -732,7 +732,7 @@ export function PaymentContent() {
                                       size="sm"
                                       onClick={() => {
                                         navigator.clipboard.writeText(
-                                          paymentResponse.pay_address
+                                          paymentResponse.pay_address,
                                         );
                                         toast({
                                           title: "Copié!",
