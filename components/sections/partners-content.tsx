@@ -211,7 +211,7 @@ export function PartnersContent() {
 
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center mb-8">
               <a
-                href="https://wa.me/22891164952"
+                href="https://wa.me/22872703933"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center"
@@ -463,7 +463,7 @@ export function PartnersContent() {
               <span className="text-white/70">ou</span>
 
               <a
-                href="https://wa.me/22891164952"
+                href="https://wa.me/22872703933"
                 target="_blank"
                 rel="noopener noreferrer"
               >

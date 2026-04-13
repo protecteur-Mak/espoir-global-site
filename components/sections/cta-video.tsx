@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export function CtaVideoSection() {
   return (
     <section
@@ -28,6 +30,15 @@ export function CtaVideoSection() {
           >
             Votre navigateur ne prend pas en charge la lecture de vidéos.
           </video>
+        </div>
+
+        <div className="mt-6 md:mt-8 text-center">
+          <Link
+            href="/galerie"
+            className="inline-flex items-center justify-center rounded-full bg-indigo-700 px-6 py-3 text-sm md:text-base font-semibold text-white shadow-md transition-colors hover:bg-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
+          >
+            Voir la galerie
+          </Link>
         </div>
       </div>
     </section>
