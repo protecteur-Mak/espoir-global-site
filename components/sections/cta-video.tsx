@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 export function CtaVideoSection() {
   return (
@@ -42,5 +42,5 @@ export function CtaVideoSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
