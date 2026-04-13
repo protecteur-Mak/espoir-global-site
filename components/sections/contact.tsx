@@ -270,7 +270,7 @@ export function ContactSection() {
                   <FaWhatsapp className="text-indigo-700 md:text-indigo-600 mt-1 mr-4 w-5 h-5 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors">
-                      +228 91 16 49 52
+                      +33 7 53 81 40 72
                     </p>
                     <p className="text-sm text-gray-500 md:text-gray-600 md:flex md:items-center">
                       <Clock className="hidden md:block w-3 h-3 mr-1" />
@@ -320,7 +320,7 @@ export function ContactSection() {
                     <FaTiktok className="w-6 h-6 md:w-8 md:h-8" />
                   </a>
                   <a
-                    href="https://wa.me/22891164952"
+                    href="https://wa.me/22872703933"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-green-500 md:bg-gradient-to-br md:from-green-500 md:to-green-600 text-white rounded-full md:rounded-2xl hover:bg-green-600 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"

@@ -1,0 +1,13 @@
+---
+description: Enforce Espoir Global git identity for all commits
+alwaysApply: true
+---
+
+# Git Identity Policy
+
+- Use only this git author identity for all commits in this repository:
+  - Name: `Espoir Global`
+  - Email: `espoirglobal123@gmail.com`
+- Never commit or push with any other git user name or email.
+- Before creating commits or pushing, verify the effective author identity is the Espoir Global identity.
+- If a different identity is detected, stop and ask to correct the identity before proceeding.
