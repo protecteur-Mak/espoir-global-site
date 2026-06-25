@@ -1,0 +1,1 @@
+- [Espoir Global workflow](espoir-global-workflow.md) — Replit = édition, GitHub main = source, Vercel = déploiement auto sur espoir-global.org
