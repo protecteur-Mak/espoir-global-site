@@ -2,8 +2,9 @@
 
 import type React from "react";
 
-import { Heart, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAppStore } from "@/lib/store";
@@ -65,15 +66,16 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-indigo-700 text-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center max-w-screen-xl">
-        <div className="flex items-center">
-          <Heart className="text-xl mr-2" />
-          <Link
-            href="/"
-            className="font-semibold text-lg hover:underline focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-colors"
-          >
-            Espoir Global
-          </Link>
-        </div>
+        <Link href="/" className="flex items-center focus:outline-none focus:ring-2 focus:ring-yellow-400 rounded">
+          <Image
+            src="/logo.png"
+            alt="Espoir Global"
+            width={140}
+            height={48}
+            className="object-contain h-12 w-auto"
+            priority
+          />
+        </Link>
 
         <div className="hidden lg:flex items-center space-x-6">
           {navItems.map((item) => (
