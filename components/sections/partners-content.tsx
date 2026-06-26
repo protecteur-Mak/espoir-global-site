@@ -1,7 +1,8 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,6 +53,11 @@ const donors: Donor[] = [
 export function PartnersContent() {
   const router = useRouter();
   const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const benefits = [
     {
@@ -107,6 +113,7 @@ export function PartnersContent() {
   };
 
   return (
+    <>
     <section className="py-6 md:py-16 pb-20 md:pb-16">
       <div className="container mx-auto px-4 max-w-screen-xl">
         {/* Header */}
@@ -441,10 +448,12 @@ export function PartnersContent() {
         </div>
       </div>
 
-      {/* Modal donateur */}
-      {selectedDonor && (
+    </section>
+
+      {/* Modal donateur — portal pour éviter les problèmes de stacking context */}
+      {mounted && selectedDonor && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           onClick={() => setSelectedDonor(null)}
         >
           <div
@@ -516,8 +525,9 @@ export function PartnersContent() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </section>
+    </>
   );
 }

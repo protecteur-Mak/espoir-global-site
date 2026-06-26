@@ -21,7 +21,6 @@ import {
   CheckCircle,
   AlertCircle,
   MessageCircle,
-  Clock,
   Building,
 } from "lucide-react";
 import { FaTiktok, FaWhatsapp } from "react-icons/fa";
@@ -248,10 +247,7 @@ export function ContactSection() {
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors">
                       +228 91 16 49 52
                     </p>
-                    <p className="text-sm text-gray-500 md:text-gray-600 md:flex md:items-center">
-                      <Clock className="hidden md:block w-3 h-3 mr-1" />
-                      Lun-Ven, 9h-18h
-                    </p>
+                    
                   </div>
                 </div>
 
