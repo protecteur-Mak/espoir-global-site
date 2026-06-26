@@ -1,6 +1,6 @@
 import { FaWhatsapp } from "react-icons/fa";
 
-const WHATSAPP_CHAT_URL = "https://wa.me/22872703933";
+const WHATSAPP_CHAT_URL = "https://wa.me/22891164952";
 
 export function WhatsAppFab() {
   return (

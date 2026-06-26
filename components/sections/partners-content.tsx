@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,14 +14,44 @@ import {
   Gift,
   MessageCircle,
   Mail,
+  MapPin,
+  Phone,
+  X,
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+type Donor = {
+  id: string;
+  name: string;
+  image: string;
+  location: string;
+  whatsapp: string;
+  phone: string;
+  badge: string;
+  badgeColor: string;
+  accentColor: string;
+};
+
+const donors: Donor[] = [
+  {
+    id: "baba-emmaus",
+    name: "Prophète BABA Emmaüs",
+    image: "/images/team/baba-emmaus.png",
+    location: "Congo Brazzaville",
+    whatsapp: "242053673206",
+    phone: "+242 05 367 32 06",
+    badge: "⭐ VIP",
+    badgeColor: "from-yellow-400 to-yellow-600",
+    accentColor: "from-indigo-500/10 to-purple-500/10",
+  },
+];
+
 export function PartnersContent() {
   const router = useRouter();
+  const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
 
   const benefits = [
     {
@@ -199,7 +230,7 @@ export function PartnersContent() {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 md:p-12 rounded-2xl text-center border border-yellow-200">
+        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 md:p-12 rounded-2xl text-center border border-yellow-200 mb-12">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-indigo-700 mb-6">
               📲 Prêt à devenir Bâtisseur d'Espoir ?
@@ -211,7 +242,7 @@ export function PartnersContent() {
 
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center mb-8">
               <a
-                href="https://wa.me/22872703933"
+                href="https://wa.me/22891164952"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center"
@@ -251,7 +282,7 @@ export function PartnersContent() {
           </div>
         </div>
 
-        {/* Official Partners */}
+        {/* Official Donors */}
         <div className="mt-12 mb-12">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-3xl mb-6 shadow-xl">
@@ -268,130 +299,60 @@ export function PartnersContent() {
           </div>
 
           <div className="relative">
-            {/* Decorative background elements */}
             <div className="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full opacity-20 -z-10"></div>
             <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full opacity-20 -z-10"></div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {/* Baron Cephas */}
-              <div className="group relative">
-                <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-                  {/* Premium badge */}
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    ⭐ VIP
-                  </div>
-
-                  {/* Decorative corner */}
-                  <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-br-3xl"></div>
-
-                  <div className="text-center relative z-10">
-                    <div className="relative inline-block mb-6">
-                      <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gradient-to-r ring-yellow-400 shadow-2xl mx-auto relative">
-                        <Image
-                          src="/images/team/baron-cephas.png"
-                          alt="Baron Cephas"
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                      </div>
-                      {/* Floating elements */}
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
-                        <Heart className="w-4 h-4 text-white" />
-                      </div>
+            <div className="flex justify-center">
+              {donors.map((donor) => (
+                <div
+                  key={donor.id}
+                  className="group relative cursor-pointer max-w-xs w-full"
+                  onClick={() => setSelectedDonor(donor)}
+                >
+                  <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
+                    <div className={`absolute top-4 right-4 bg-gradient-to-r ${donor.badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>
+                      {donor.badge}
                     </div>
+                    <div className={`absolute top-0 left-0 w-16 h-16 bg-gradient-to-br ${donor.accentColor} rounded-br-3xl`}></div>
 
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
-                      Baron Cephas
-                    </h3>
-                    <div className="inline-flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-2 rounded-full border border-indigo-200">
-                      <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-indigo-700">
-                        Partenaire Officiel
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Lauréline Elui Ginet */}
-              <div className="group relative">
-                <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-                  {/* Premium badge */}
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-400 to-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    ⭐ VIP
-                  </div>
-
-                  {/* Decorative corner */}
-                  <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-pink-500/10 to-rose-500/10 rounded-br-3xl"></div>
-
-                  <div className="text-center relative z-10">
-                    <div className="relative inline-block mb-6">
-                      <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gradient-to-r ring-pink-400 shadow-2xl mx-auto relative">
-                        <Image
-                          src="/images/team/laureline-elui-ginet.png"
-                          alt="Lauréline Elui Ginet"
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
+                    <div className="text-center relative z-10">
+                      <div className="relative inline-block mb-6">
+                        <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-yellow-400 shadow-2xl mx-auto relative">
+                          <Image
+                            src={donor.image}
+                            alt={donor.name}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/placeholder-user.jpg";
+                            }}
+                          />
+                        </div>
+                        <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+                          <Heart className="w-4 h-4 text-white" />
+                        </div>
                       </div>
-                      {/* Floating elements */}
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
-                        <Heart className="w-4 h-4 text-white" />
-                      </div>
-                    </div>
 
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-pink-600 transition-colors">
-                      Lauréline Elui Ginet
-                    </h3>
-                    <div className="inline-flex items-center bg-gradient-to-r from-pink-50 to-rose-50 px-4 py-2 rounded-full border border-pink-200">
-                      <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-pink-700">
-                        Partenaire Officielle
-                      </span>
+                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
+                        {donor.name}
+                      </h3>
+                      <div className="flex items-center justify-center gap-1 text-sm text-gray-500 mb-3">
+                        <MapPin className="w-3 h-3" />
+                        {donor.location}
+                      </div>
+                      <div className="inline-flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-2 rounded-full border border-indigo-200">
+                        <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-2"></div>
+                        <span className="text-sm font-medium text-indigo-700">
+                          Partenaire Officiel
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-3">
+                        Appuyez pour voir les coordonnées
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Yara Aziz */}
-              <div className="group relative">
-                <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-                  {/* Premium badge */}
-                  <div className="absolute top-4 right-4 bg-gradient-to-r from-emerald-400 to-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    ⭐ VIP
-                  </div>
-
-                  {/* Decorative corner */}
-                  <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-br-3xl"></div>
-
-                  <div className="text-center relative z-10">
-                    <div className="relative inline-block mb-6">
-                      <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-gradient-to-r ring-emerald-400 shadow-2xl mx-auto relative">
-                        <Image
-                          src="/images/team/yara-aziz.png"
-                          alt="Yara Aziz"
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                      </div>
-                      {/* Floating elements */}
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center shadow-lg">
-                        <Heart className="w-4 h-4 text-white" />
-                      </div>
-                    </div>
-
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-emerald-600 transition-colors">
-                      Yara Aziz
-                    </h3>
-                    <div className="inline-flex items-center bg-gradient-to-r from-emerald-50 to-teal-50 px-4 py-2 rounded-full border border-emerald-200">
-                      <div className="w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mr-2"></div>
-                      <span className="text-sm font-medium text-emerald-700">
-                        Partenaire Officielle
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Recognition message */}
@@ -423,7 +384,6 @@ export function PartnersContent() {
 
         {/* CTA to become Official Donor */}
         <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-8 md:p-12 rounded-3xl text-center relative overflow-hidden shadow-2xl">
-          {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-yellow-400 rounded-full opacity-10 transform translate-x-20 -translate-y-20"></div>
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-400 rounded-full opacity-10 transform -translate-x-16 translate-y-16"></div>
 
@@ -463,7 +423,7 @@ export function PartnersContent() {
               <span className="text-white/70">ou</span>
 
               <a
-                href="https://wa.me/22872703933"
+                href="https://wa.me/22891164952"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -480,6 +440,84 @@ export function PartnersContent() {
           </div>
         </div>
       </div>
+
+      {/* Modal donateur */}
+      {selectedDonor && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setSelectedDonor(null)}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedDonor(null)}
+              className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X className="w-4 h-4 text-gray-600" />
+            </button>
+
+            <div className="text-center">
+              <div className="relative inline-block mb-6">
+                <div className="w-36 h-36 rounded-full overflow-hidden ring-4 ring-yellow-400 shadow-2xl mx-auto relative">
+                  <Image
+                    src={selectedDonor.image}
+                    alt={selectedDonor.name}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/placeholder-user.jpg";
+                    }}
+                  />
+                </div>
+                <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+                  <Heart className="w-5 h-5 text-white" />
+                </div>
+              </div>
+
+              <h3 className="text-2xl font-bold text-gray-800 mb-1">
+                {selectedDonor.name}
+              </h3>
+
+              <div className={`inline-block bg-gradient-to-r ${selectedDonor.badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full mb-6`}>
+                {selectedDonor.badge} Partenaire Officiel
+              </div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                  <MapPin className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium">Localisation</p>
+                    <p className="text-base font-semibold text-gray-800">{selectedDonor.location}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                  <Phone className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium">Contact</p>
+                    <p className="text-base font-semibold text-gray-800">{selectedDonor.phone}</p>
+                  </div>
+                </div>
+
+                <a
+                  href={`https://wa.me/${selectedDonor.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-4 hover:bg-green-100 transition-colors"
+                >
+                  <FaWhatsapp className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium">WhatsApp</p>
+                    <p className="text-base font-semibold text-green-700">{selectedDonor.phone}</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

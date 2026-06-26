@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Heart, Share2, Home } from "lucide-react";
-import { FaWhatsapp, FaFacebook, FaTiktok } from "react-icons/fa";
+import { FaWhatsapp, FaTiktok } from "react-icons/fa";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
@@ -112,14 +112,6 @@ export function ConfirmationContent() {
                 className="flex items-center justify-center w-12 h-12 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
               >
                 <FaWhatsapp className="w-6 h-6" />
-              </a>
-              <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}&quote=${encodeURIComponent(shareMessage)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
-              >
-                <FaFacebook className="w-6 h-6" />
               </a>
               <a
                 href={`https://www.tiktok.com/share?text=${encodeURIComponent(shareMessage)}`}

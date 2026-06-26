@@ -23,7 +23,6 @@ import {
   MessageCircle,
   Clock,
   Building,
-  Facebook,
 } from "lucide-react";
 import { FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { useAppStore } from "@/lib/store";
@@ -34,17 +33,10 @@ export function ContactSection() {
     contactForm,
     updateContactForm,
     submitContactForm,
-    newsletterEmail,
-    setNewsletterEmail,
-    subscribeNewsletter,
   } = useAppStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
-  const [isSubscribing, setIsSubscribing] = useState(false);
-  const [subscribeStatus, setSubscribeStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
 
@@ -60,22 +52,6 @@ export function ContactSection() {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubscribing(true);
-    setSubscribeStatus("idle");
-
-    try {
-      await subscribeNewsletter(newsletterEmail);
-      setSubscribeStatus("success");
-      setNewsletterEmail("");
-    } catch (error) {
-      setSubscribeStatus("error");
-    } finally {
-      setIsSubscribing(false);
     }
   };
 
@@ -270,11 +246,11 @@ export function ContactSection() {
                   <FaWhatsapp className="text-indigo-700 md:text-indigo-600 mt-1 mr-4 w-5 h-5 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors">
-                      +33 7 53 81 40 72
+                      +228 91 16 49 52
                     </p>
                     <p className="text-sm text-gray-500 md:text-gray-600 md:flex md:items-center">
                       <Clock className="hidden md:block w-3 h-3 mr-1" />
-                      Lun-Ven, 9h-18h (CET)
+                      Lun-Ven, 9h-18h
                     </p>
                   </div>
                 </div>
@@ -283,7 +259,7 @@ export function ContactSection() {
                   <MapPin className="text-indigo-700 md:text-indigo-600 mt-1 mr-4 w-5 h-5 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors break-words">
-                      15 Rue de l'Espoir, 75001 Paris
+                      Aneho Qt Jéricho, Préfecture des Lacs, TOGO
                     </p>
                     <p className="text-sm text-gray-500 md:text-gray-600">
                       Siège social
@@ -294,134 +270,47 @@ export function ContactSection() {
             </div>
 
             {/* Social Media */}
-            {/* Newsletter */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {/* Social Media */}
-              <div className="bg-white p-6 md:p-10 rounded-lg md:rounded-2xl shadow-sm md:shadow-xl md:border md:border-gray-100 md:col-span-2">
-                <div className="text-center mb-6 md:mb-8">
-                  <h3 className="font-semibold md:text-2xl text-gray-800 mb-6 text-lg md:mb-4">
-                    Suivez-nous
-                    <span className="hidden md:inline"> sur les réseaux</span>
-                  </h3>
-                  <p className="hidden md:block text-gray-600">
-                    Restez connectés avec nos actions et découvrez l'impact de
-                    votre soutien
-                  </p>
-                </div>
-
-                <div className="flex justify-center space-x-4 md:space-x-8">
-                  <a
-                    href="https://www.tiktok.com/@sourireretrouve"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-black md:bg-gradient-to-br md:from-gray-800 md:to-black text-white rounded-full md:rounded-2xl hover:bg-gray-800 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"
-                    aria-label="Suivez-nous sur TikTok"
-                  >
-                    <FaTiktok className="w-6 h-6 md:w-8 md:h-8" />
-                  </a>
-                  <a
-                    href="https://wa.me/22872703933"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-green-500 md:bg-gradient-to-br md:from-green-500 md:to-green-600 text-white rounded-full md:rounded-2xl hover:bg-green-600 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"
-                    aria-label="Contactez-nous sur WhatsApp"
-                  >
-                    <FaWhatsapp className="w-6 h-6 md:w-8 md:h-8" />
-                  </a>
-                  <a
-                    href="https://www.facebook.com/profile.php?id=61574260992386"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-blue-600 md:bg-gradient-to-br md:from-blue-600 md:to-blue-700 text-white rounded-full md:rounded-2xl hover:bg-blue-700 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"
-                    aria-label="Suivez-nous sur Facebook"
-                  >
-                    <Facebook className="w-6 h-6 md:w-8 md:h-8" />
-                  </a>
-                </div>
-
-                {/* Desktop labels */}
-                <div className="hidden md:flex justify-center space-x-6 mt-4">
-                  <span className="text-sm font-medium text-gray-600 hover:text-gray-800">
-                    TikTok
-                  </span>
-                  <span className="text-sm font-medium text-gray-600 hover:text-gray-800">
-                    WhatsApp
-                  </span>
-                  <span className="text-sm font-medium text-gray-600 hover:text-gray-800">
-                    Facebook
-                  </span>
-                </div>
+            <div className="bg-white p-6 md:p-10 rounded-lg md:rounded-2xl shadow-sm md:shadow-xl md:border md:border-gray-100">
+              <div className="text-center mb-6 md:mb-8">
+                <h3 className="font-semibold md:text-2xl text-gray-800 mb-6 text-lg md:mb-4">
+                  Suivez-nous
+                  <span className="hidden md:inline"> sur les réseaux</span>
+                </h3>
+                <p className="hidden md:block text-gray-600">
+                  Restez connectés avec nos actions et découvrez l'impact de
+                  votre soutien
+                </p>
               </div>
 
-              {/* Newsletter */}
-              <div className="bg-white md:bg-gradient-to-br md:from-indigo-50 md:to-blue-50 p-6 md:p-10 rounded-lg md:rounded-2xl shadow-sm md:border md:border-indigo-200 md:col-span-2">
-                <div className="text-center mb-6 md:mb-8">
-                  <div className="hidden md:inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl mb-4">
-                    <Mail className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold md:text-2xl text-gray-800 mb-6 text-lg md:mb-4">
-                    Inscrivez-vous à notre newsletter
-                    <span className="hidden md:block md:text-xl">
-                      Newsletter
-                    </span>
-                  </h3>
-                  <p className="hidden md:block text-gray-600">
-                    Recevez nos actualités et découvrez l'impact concret de
-                    votre soutien
-                  </p>
-                </div>
-
-                {subscribeStatus === "success" && (
-                  <div className="mb-4 md:mb-6 p-3 md:p-4 bg-green-50 md:bg-gradient-to-r md:from-green-50 md:to-emerald-50 border border-green-200 rounded-lg md:rounded-xl flex items-center md:justify-center">
-                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 mr-2" />
-                    <span className="text-green-800 text-sm md:font-medium">
-                      Inscription réussie ! Vérifiez votre email.
-                    </span>
-                  </div>
-                )}
-
-                {subscribeStatus === "error" && (
-                  <div className="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 md:bg-gradient-to-r md:from-red-50 md:to-pink-50 border border-red-200 rounded-lg md:rounded-xl flex items-center md:justify-center">
-                    <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-red-600 mr-2" />
-                    <span className="text-red-800 text-sm md:font-medium">
-                      Erreur lors de l'inscription. Réessayez.
-                    </span>
-                  </div>
-                )}
-
-                <form
-                  onSubmit={handleNewsletterSubmit}
-                  className="space-y-4 md:space-y-6"
+              <div className="flex justify-center space-x-6 md:space-x-8">
+                <a
+                  href="https://www.tiktok.com/@sourireretrouve"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-black md:bg-gradient-to-br md:from-gray-800 md:to-black text-white rounded-full md:rounded-2xl hover:bg-gray-800 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"
+                  aria-label="Suivez-nous sur TikTok"
                 >
-                  <Input
-                    type="email"
-                    placeholder="Votre email"
-                    className="h-12 md:h-14 md:text-base md:border-2 md:border-indigo-200 md:rounded-xl md:focus:border-indigo-500 md:focus:ring-indigo-500 md:bg-white/80 md:backdrop-blur-sm"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    required
-                  />
-                  <div className="flex justify-center">
-                    <Button
-                      type="submit"
-                      className="w-full md:w-auto bg-indigo-700 hover:bg-indigo-800 md:bg-gradient-to-r md:from-indigo-600 md:to-indigo-700 md:hover:from-indigo-700 md:hover:to-indigo-800 text-white h-12 md:px-10 md:py-4 md:text-lg md:font-semibold md:rounded-xl md:shadow-xl md:hover:shadow-2xl md:transform md:hover:scale-105 md:transition-all md:duration-300"
-                      disabled={isSubscribing}
-                    >
-                      {isSubscribing ? "..." : "S'inscrire"}
-                      <span className="hidden md:inline">
-                        {isSubscribing ? "Inscription..." : " à la newsletter"}
-                      </span>
-                    </Button>
-                  </div>
-                </form>
-                <p className="text-xs text-gray-500 mt-3 md:mt-4 md:text-center md:leading-relaxed">
-                  Recevez des nouvelles de nos actions et de l'impact de vos
-                  dons.
-                  <span className="hidden md:block">
-                    Histoires inspirantes • Rapports d'impact • Invitations
-                    événements • Désabonnement facile
-                  </span>
-                </p>
+                  <FaTiktok className="w-6 h-6 md:w-8 md:h-8" />
+                </a>
+                <a
+                  href="https://wa.me/22891164952"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-green-500 md:bg-gradient-to-br md:from-green-500 md:to-green-600 text-white rounded-full md:rounded-2xl hover:bg-green-600 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"
+                  aria-label="Contactez-nous sur WhatsApp"
+                >
+                  <FaWhatsapp className="w-6 h-6 md:w-8 md:h-8" />
+                </a>
+              </div>
+
+              {/* Desktop labels */}
+              <div className="hidden md:flex justify-center space-x-10 mt-4">
+                <span className="text-sm font-medium text-gray-600 hover:text-gray-800">
+                  TikTok
+                </span>
+                <span className="text-sm font-medium text-gray-600 hover:text-gray-800">
+                  WhatsApp
+                </span>
               </div>
             </div>
           </div>
