@@ -533,7 +533,7 @@ export function PaymentContent() {
                       value={bankCardData.prenom}
                       onChange={(e) =>
                         handleInputChange("prenom", e.target.value)
-                      }
+     }
                       required
                     />
                   </div>
@@ -599,21 +599,8 @@ export function PaymentContent() {
                         const value = e.target.value.replace(/\D/g, "");
                         handleInputChange("codePostal", value);
                       }}
-                      className={
-                        bankCardData.codePostal.length > 0 &&
-                        bankCardData.codePostal.length !== 5
-                          ? "border-red-500 focus:border-red-500"
-                          : ""
-                      }
-                      placeholder="12345"
                       required
                     />
-                    {bankCardData.codePostal.length > 0 &&
-                      bankCardData.codePostal.length !== 5 && (
-                        <p className="text-red-500 text-xs mt-1">
-                          Le code postal doit contenir exactement 5 chiffres
-                        </p>
-                      )}
                   </div>
                 </div>
 
@@ -667,4 +654,4 @@ export default function PaymentContentWithSuspense() {
       <PaymentContent />
     </Suspense>
   );
-}
+                      }
