@@ -395,7 +395,7 @@ export function PaymentContent() {
                       </div>
                     </div>
                   </div>
-                )}
+                })
 
                 {activeTab === "paypal" && (
                   <div className="space-y-4">
