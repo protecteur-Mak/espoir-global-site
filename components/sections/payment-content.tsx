@@ -56,7 +56,7 @@ function TabImage({
     <img
       src={src}
       alt={alt}
-      className="h-8 w-auto object-contain mx-auto"
+      style={{ maxHeight: "40px", maxWidth: "100%", width: "auto", objectFit: "contain", display: "block", margin: "0 auto" }}
       onError={() => setFailed(true)}
     />
   );
