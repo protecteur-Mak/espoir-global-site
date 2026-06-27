@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
   Smartphone,
@@ -69,6 +68,7 @@ export function PaymentContent() {
   const [customAmount, setCustomAmount] = useState("");
   const [donationType, setDonationType] = useState("one-time");
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"mobile" | "paypal">("mobile");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [showBankCardForm, setShowBankCardForm] = useState(false);
@@ -328,114 +328,128 @@ export function PaymentContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="mobile" className="w-full">
-                {/* ── Onglets : 2 colonnes ─────────────────────────────── */}
-                <TabsList className="grid w-full grid-cols-2 h-auto mb-2">
-                  {/* Bouton Mobile — affiche /images/payment/mobile.png si disponible */}
-                  <TabsTrigger
-                    value="mobile"
-                    className="py-3 px-2 bg-orange-100 data-[state=active]:bg-orange-200 hover:bg-orange-200 transition-colors"
+              <div className="w-full">
+                {/* ── Boutons custom : 2 colonnes ──────────────────────── */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  {/* Bouton Mobile */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("mobile")}
+                    className={`flex items-center justify-center rounded-md p-3 transition-all border-2 min-h-[64px] ${
+                      activeTab === "mobile"
+                        ? "border-orange-400 bg-orange-100 shadow-md"
+                        : "border-transparent bg-gray-100 hover:bg-orange-50 hover:border-orange-200"
+                    }`}
                   >
                     <TabImage
                       src="/images/payment/mobile.png"
                       alt="Mobile Money"
                       fallback={
-                        <span className="flex items-center gap-1 text-sm font-medium">
-                          <Smartphone className="w-4 h-4" />
+                        <span className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                          <Smartphone className="w-5 h-5 text-orange-500" />
                           Mobile
                         </span>
                       }
                     />
-                  </TabsTrigger>
+                  </button>
 
-                  {/* Bouton PayPal — affiche /images/payment/paypal.png si disponible */}
-                  <TabsTrigger
-                    value="paypal"
-                    className="py-3 px-2 bg-blue-100 data-[state=active]:bg-blue-200 hover:bg-blue-200 transition-colors"
+                  {/* Bouton PayPal */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("paypal")}
+                    className={`flex items-center justify-center rounded-md p-3 transition-all border-2 min-h-[64px] ${
+                      activeTab === "paypal"
+                        ? "border-blue-400 bg-blue-100 shadow-md"
+                        : "border-transparent bg-gray-100 hover:bg-blue-50 hover:border-blue-200"
+                    }`}
                   >
                     <TabImage
                       src="/images/payment/paypal.png"
                       alt="PayPal"
                       fallback={
-                        <span className="flex items-center gap-1 text-sm font-medium">
-                          <FaPaypal className="w-4 h-4" />
+                        <span className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                          <FaPaypal className="w-5 h-5 text-blue-600" />
                           PayPal
                         </span>
                       }
                     />
-                  </TabsTrigger>
-                </TabsList>
+                  </button>
+                </div>
 
                 {/* ── Contenu Mobile ───────────────────────────────────── */}
-                <TabsContent value="mobile" className="space-y-4">
-                  <div className="text-center p-6">
-                    <Smartphone className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-4">
-                      Mobile Money / WAVE / Carte Bancaire
-                    </h3>
-                    <p className="text-gray-600 mb-6">
-                      Paiement sécurisé via Mobile Money (Orange Money, MTN
-                      Mobile Money, Moov Money), Wallet (WAVE) ou carte
-                      bancaire. Transaction rapide et sécurisée.
-                    </p>
-                    <div className="flex justify-center">
-                      <Button
-                        size="lg"
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8"
-                        onClick={() => setIsDialogOpen(true)}
-                      >
-                        Payer maintenant — {finalAmount}€
-                      </Button>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                {/* ── Contenu PayPal ───────────────────────────────────── */}
-                <TabsContent value="paypal" className="space-y-4">
-                  <div className="text-center p-6">
-                    <div className="bg-blue-100 p-4 rounded-lg mb-6">
-                      <Image
-                        src="/paypal-qr.png"
-                        alt="PayPal QR Code"
-                        width={200}
-                        height={200}
-                        className="mx-auto mb-4"
-                      />
-                      <p className="text-sm text-gray-600 mb-4">
-                        Scannez ce QR code avec votre app PayPal
+                {activeTab === "mobile" && (
+                  <div className="space-y-4">
+                    <div className="text-center p-6">
+                      <Smartphone className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold mb-4">
+                        Mobile Money / WAVE / Carte Bancaire
+                      </h3>
+                      <p className="text-gray-600 mb-6">
+                        Paiement sécurisé via Mobile Money (Orange Money, MTN
+                        Mobile Money, Moov Money), Wallet (WAVE) ou carte
+                        bancaire. Transaction rapide et sécurisée.
                       </p>
-                    </div>
-
-                    <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                      <p className="text-sm font-medium text-gray-700 mb-2">
-                        Ou envoyez directement à :
-                      </p>
-                      <div className="flex items-center justify-center space-x-2">
-                        <span className="font-mono text-sm bg-white px-3 py-2 rounded border">
-                          ongsoutienplus@gmail.com
-                        </span>
+                      <div className="flex justify-center">
+                        <Button
+                          size="lg"
+                          className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8"
+                          onClick={() => setIsDialogOpen(true)}
+                        >
+                          Payer maintenant — {finalAmount}€
+                        </Button>
                       </div>
                     </div>
+                  </div>
+                )}
 
-                    <div className="w-full flex justify-center">
-                      <Button
-                        size="lg"
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8"
-                        onClick={() =>
-                          copyToClipboard("ongsoutienplus@gmail.com", "paypal")
-                        }
-                      >
-                        {copiedField === "paypal" ? (
-                          <CheckCircle className="w-5 h-5 mr-2" />
-                        ) : (
-                          <Copy className="w-5 h-5 mr-2" />
-                        )}
-                        Copier l'email PayPal
-                      </Button>
+                {/* ── Contenu PayPal ───────────────────────────────────── */}
+                {activeTab === "paypal" && (
+                  <div className="space-y-4">
+                    <div className="text-center p-6">
+                      <div className="bg-blue-100 p-4 rounded-lg mb-6">
+                        <Image
+                          src="/paypal-qr.png"
+                          alt="PayPal QR Code"
+                          width={200}
+                          height={200}
+                          className="mx-auto mb-4"
+                        />
+                        <p className="text-sm text-gray-600 mb-4">
+                          Scannez ce QR code avec votre app PayPal
+                        </p>
+                      </div>
+
+                      <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                        <p className="text-sm font-medium text-gray-700 mb-2">
+                          Ou envoyez directement à :
+                        </p>
+                        <div className="flex items-center justify-center space-x-2">
+                          <span className="font-mono text-sm bg-white px-3 py-2 rounded border">
+                            ongsoutienplus@gmail.com
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="w-full flex justify-center">
+                        <Button
+                          size="lg"
+                          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8"
+                          onClick={() =>
+                            copyToClipboard("ongsoutienplus@gmail.com", "paypal")
+                          }
+                        >
+                          {copiedField === "paypal" ? (
+                            <CheckCircle className="w-5 h-5 mr-2" />
+                          ) : (
+                            <Copy className="w-5 h-5 mr-2" />
+                          )}
+                          Copier l'email PayPal
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </TabsContent>
-              </Tabs>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
