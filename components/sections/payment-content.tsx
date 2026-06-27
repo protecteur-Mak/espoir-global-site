@@ -54,12 +54,21 @@ export function PaymentContent() {
           payment_method: channel,
         }),
       });
+
       const result = await response.json();
+      
+      // On ajoute une alerte pour savoir ce qui se passe réellement
       if (result.code === '201') {
         window.location.href = result.data.payment_url;
       } else {
-        toast({ title: "Erreur", description: result.message || "Erreur de paiement", variant: "destructive" });
+        alert("CinetPay a répondu : " + JSON.stringify(result)); // Cette ligne vous dira l'erreur précise
+        setLoading(false);
       }
+    } catch (error) {
+      alert("Erreur de connexion : " + error);
+      setLoading(false);
+    }
+  };
     } catch (error) {
       toast({ title: "Erreur", description: "Impossible de contacter le serveur", variant: "destructive" });
     } finally {
