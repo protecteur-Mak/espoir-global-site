@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
   Smartphone,
-  Bitcoin,
   Copy,
   CheckCircle,
   CreditCard,
@@ -27,13 +26,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Suspense } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-import { useCinetPay } from "@/hooks/use-cinetpay";
-import { useToast } from "@/hooks/use-toast";
-
-import { COINS } from "@/lib/coins";
-import { MIN_TOPUP_USDT } from "@/lib/constants";
 import {
   Dialog,
   DialogContent,
@@ -41,15 +34,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Alert, AlertDescription } from "../ui/alert";
-import { createPayment } from "@/services/nowpayments";
+import { useCinetPay } from "@/hooks/use-cinetpay";
+import { useToast } from "@/hooks/use-toast";
 import { getCountryCode, getCountriesList } from "@/lib/utils";
 
-function formatTimer(sec: number | null) {
-  if (sec === null) return "";
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+/* ─── Bouton d'onglet avec image optionnelle ─────────────────────────────── */
+function TabImage({
+  src,
+  alt,
+  fallback,
+}: {
+  src: string;
+  alt: string;
+  fallback: React.ReactNode;
+}) {
+  const [failed, setFailed] = useState(false);
+  return failed ? (
+    <>{fallback}</>
+  ) : (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      className="h-8 w-auto object-contain mx-auto"
+      onError={() => setFailed(true)}
+    />
+  );
 }
 
 export function PaymentContent() {
@@ -59,31 +69,10 @@ export function PaymentContent() {
   const [customAmount, setCustomAmount] = useState("");
   const [donationType, setDonationType] = useState("one-time");
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [timer, setTimer] = useState<number | null>(null);
-  const [timerExpired, setTimerExpired] = useState(false);
-  const [paymentResponse, setPaymentResponse] = useState<any>(null);
-  const [paymentId, setPaymentId] = useState("");
-  const [paymentAddress, setPaymentAddress] = useState("");
-  const [selectedPayCurrency, setSelectedPayCurrency] = useState<string>("trx");
-  const selectedCoin = COINS.find(
-    (c) => c.currency_code === selectedPayCurrency,
-  );
-  const filteredCoins = COINS.filter(
-    (coin) =>
-      coin.name.toLowerCase().includes(search.toLowerCase()) ||
-      coin.full_name.toLowerCase().includes(search.toLowerCase()),
-  );
-  const [showReview, setShowReview] = useState(false);
-
-  // Dialog states
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<string>("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [showBankCardForm, setShowBankCardForm] = useState(false);
 
-  // Bank card form data
   const [bankCardData, setBankCardData] = useState({
     nom: "",
     prenom: "",
@@ -96,98 +85,28 @@ export function PaymentContent() {
     channels: "",
   });
 
-  // Get countries list for dropdown
   const countriesList = getCountriesList();
-
-  const handleContinue = () => {
-    const amount = selectedAmount ?? (Number.parseFloat(customAmount) || 0);
-    if (amount >= MIN_TOPUP_USDT) {
-      setShowReview(true);
-    }
-  };
-
-  const handleConfirm = async () => {
-    try {
-      setIsLoading(true);
-      // Convert finalAmount (in euro) to dollars (USD)
-      const euroToUsdRate = 1.08;
-      const finalAmountInUsd =
-        Math.round(finalAmount * euroToUsdRate * 100) / 100; // Example conversion rate, update as needed
-      const depositAmount = finalAmountInUsd;
-
-      const paymentId = uuidv4();
-      const payment = await createPayment(
-        depositAmount,
-        selectedPayCurrency,
-        paymentId,
-      );
-
-      if (!payment || !payment.pay_address) {
-        throw new Error("Invalid payment response from NOWPayments");
-      }
-
-      setPaymentAddress(payment.pay_address);
-      setPaymentId(payment.payment_id);
-      setPaymentResponse(payment);
-      setShowReview(false);
-      setTimerExpired(false);
-      // Calculate seconds left until expiration
-      if (payment.expiration_estimate_date) {
-        const expire = new Date(payment.expiration_estimate_date).getTime();
-        const now = Date.now();
-        setTimer(Math.max(0, Math.floor((expire - now) / 1000)));
-      } else {
-        setTimer(null);
-      }
-
-      // Show payment instructions
-      toast({
-        title: "Instructions de paiement",
-        description: `Veuillez envoyer exactement ${payment.pay_amount} ${payment.pay_currency.toUpperCase()} à l'adresse suivante: ${payment.pay_address}`,
-      });
-    } catch (error: any) {
-      console.error("Error creating payment:", error);
-      toast({
-        title: "Erreur",
-        description:
-          error.message ||
-          "Une erreur est survenue lors de la création du paiement.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (timer === null) return;
-    if (timer <= 0) {
-      setTimerExpired(true);
-      setTimeout(() => {
-        setPaymentAddress("");
-        setPaymentId("");
-        setPaymentResponse(null);
-        setTimer(null);
-        setTimerExpired(false);
-      }, 2000);
-      return;
-    }
-    const interval = setInterval(() => {
-      setTimer((t) => (t !== null ? t - 1 : null));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [timer]);
-
-  // You need to have user, isAuth, game, gameAccountId, and selectedPkg (the package to buy) available in your context or props.
-
   const { handleMobilePayment } = useCinetPay();
   const { toast } = useToast();
 
-  // Conversion rate EUR to XOF
   const EUR_TO_XOF = 655;
-
   const finalAmount = selectedAmount || Number.parseFloat(customAmount) || 0;
   const finalAmountXOF = Math.round(finalAmount * EUR_TO_XOF);
+
+  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500];
+
+  useEffect(() => {
+    const amount = searchParams.get("amount");
+    const type = searchParams.get("type");
+    if (amount) setSelectedAmount(Number.parseInt(amount));
+    if (type) setDonationType(type);
+  }, [searchParams]);
+
+  const copyToClipboard = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   const handlePayment = async (
     method: string,
@@ -221,10 +140,7 @@ export function PaymentContent() {
       const result = await handleMobilePayment(paymentData);
 
       if (result.success) {
-        toast({
-          title: "Paiement réussi!",
-          description: "Paiement réussi",
-        });
+        toast({ title: "Paiement réussi!", description: "Paiement réussi" });
         router.push(
           `/confirmation?method=${method}&amount=${selectedAmount || customAmount}`,
         );
@@ -247,30 +163,26 @@ export function PaymentContent() {
 
   const handlePaymentMethodSelect = (method: string) => {
     setSelectedPaymentMethod(method);
-
-    if (method === "mobile-money" || method === "wallet") {
-      if (method === "mobile-money") {
-        setBankCardData({ ...bankCardData, channels: "MOBILE_MONEY" as const });
-        // Direct payment for mobile money with correct channel
-        handlePayment(method, "MOBILE_MONEY");
-      }
-      if (method === "wallet") {
-        setBankCardData({ ...bankCardData, channels: "WALLET" as const });
-        // Direct payment for wallet with correct channel
-        handlePayment(method, "WALLET");
-      }
+    if (method === "mobile-money") {
+      setBankCardData((prev) => ({ ...prev, channels: "MOBILE_MONEY" }));
+      handlePayment(method, "MOBILE_MONEY");
+      setIsDialogOpen(false);
+    } else if (method === "wallet") {
+      setBankCardData((prev) => ({ ...prev, channels: "WALLET" }));
+      handlePayment(method, "WALLET");
       setIsDialogOpen(false);
     } else if (method === "bank-card") {
-      setBankCardData({ ...bankCardData, channels: "CREDIT_CARD" as const });
-      // Show form for bank card
+      setBankCardData((prev) => ({ ...prev, channels: "CREDIT_CARD" }));
       setShowBankCardForm(true);
     }
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    setBankCardData((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleBankCardSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate all fields are filled
     const requiredFields = Object.values(bankCardData);
     if (requiredFields.some((field) => !field.trim())) {
       toast({
@@ -280,8 +192,6 @@ export function PaymentContent() {
       });
       return;
     }
-
-    // Validate postal code format
     if (
       bankCardData.codePostal.length !== 5 ||
       !/^\d{5}$/.test(bankCardData.codePostal)
@@ -293,50 +203,9 @@ export function PaymentContent() {
       });
       return;
     }
-
-    // Submit payment with CREDIT_CARD channel
     handlePayment("bank-card", "CREDIT_CARD");
     setIsDialogOpen(false);
     setShowBankCardForm(false);
-    setBankCardData({
-      nom: bankCardData.nom,
-      prenom: bankCardData.prenom,
-      telephone: bankCardData.telephone,
-      email: bankCardData.email,
-      adresse: bankCardData.adresse,
-      ville: bankCardData.ville,
-      pays: bankCardData.pays,
-      codePostal: bankCardData.codePostal,
-      channels: bankCardData.channels,
-    });
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setBankCardData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  // Load parameters from URL
-  useEffect(() => {
-    const amount = searchParams.get("amount");
-    const type = searchParams.get("type");
-
-    if (amount) {
-      setSelectedAmount(Number.parseInt(amount));
-    }
-    if (type) {
-      setDonationType(type);
-    }
-  }, [searchParams]);
-
-  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500];
-
-  const copyToClipboard = (text: string, field: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
   };
 
   return (
@@ -440,7 +309,7 @@ export function PaymentContent() {
             {finalAmount > 0 && (
               <div className="bg-indigo-50 p-4 rounded-lg">
                 <p className="text-lg font-semibold text-indigo-700">
-                  Montant sélectionné: {finalAmount}€{" "}
+                  Montant sélectionné : {finalAmount}€{" "}
                   {donationType === "monthly" && "par mois"}
                   {donationType === "weekly" && "par semaine"}
                   {donationType === "sponsorship" && "par mois (parrainage)"}
@@ -460,32 +329,44 @@ export function PaymentContent() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="mobile" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 h-auto">
+                {/* ── Onglets : 2 colonnes ─────────────────────────────── */}
+                <TabsList className="grid w-full grid-cols-2 h-auto mb-2">
+                  {/* Bouton Mobile — affiche /images/payment/mobile.png si disponible */}
                   <TabsTrigger
                     value="mobile"
-                    className="text-xs md:text-sm p-2 md:p-3 bg-orange-100 data-[state=active]:bg-orange-200 hover:bg-orange-200 transition-colors"
+                    className="py-3 px-2 bg-orange-100 data-[state=active]:bg-orange-200 hover:bg-orange-200 transition-colors"
                   >
-                    <Smartphone className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                    <span className="hidden sm:inline">Mobile</span>
-                    <span className="sm:hidden">Mobile</span>
+                    <TabImage
+                      src="/images/payment/mobile.png"
+                      alt="Mobile Money"
+                      fallback={
+                        <span className="flex items-center gap-1 text-sm font-medium">
+                          <Smartphone className="w-4 h-4" />
+                          Mobile
+                        </span>
+                      }
+                    />
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="crypto"
-                    className="text-xs md:text-sm p-2 md:p-3 bg-green-100 data-[state=active]:bg-green-200 hover:bg-green-200 transition-colors"
-                  >
-                    <Bitcoin className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                    Crypto
-                  </TabsTrigger>
+
+                  {/* Bouton PayPal — affiche /images/payment/paypal.png si disponible */}
                   <TabsTrigger
                     value="paypal"
-                    className="text-xs md:text-sm p-2 md:p-3 bg-blue-100 data-[state=active]:bg-blue-200 hover:bg-blue-200 transition-colors"
+                    className="py-3 px-2 bg-blue-100 data-[state=active]:bg-blue-200 hover:bg-blue-200 transition-colors"
                   >
-                    <FaPaypal className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                    PayPal
+                    <TabImage
+                      src="/images/payment/paypal.png"
+                      alt="PayPal"
+                      fallback={
+                        <span className="flex items-center gap-1 text-sm font-medium">
+                          <FaPaypal className="w-4 h-4" />
+                          PayPal
+                        </span>
+                      }
+                    />
                   </TabsTrigger>
                 </TabsList>
 
-                {/* Mobile Money */}
+                {/* ── Contenu Mobile ───────────────────────────────────── */}
                 <TabsContent value="mobile" className="space-y-4">
                   <div className="text-center p-6">
                     <Smartphone className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
@@ -503,291 +384,13 @@ export function PaymentContent() {
                         className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8"
                         onClick={() => setIsDialogOpen(true)}
                       >
-                        Payer maintenant - {finalAmount}€
+                        Payer maintenant — {finalAmount}€
                       </Button>
                     </div>
                   </div>
                 </TabsContent>
 
-                {/* Cryptocurrency */}
-                <TabsContent value="crypto" className="space-y-4">
-                  <div className="text-center p-6">
-                    {/* Payment Methods List */}
-                    <Card className="p-6">
-                      <h2 className="text-xl font-bold mb-4">
-                        Méthodes de paiement disponibles
-                      </h2>
-                      <input
-                        type="text"
-                        placeholder="Rechercher une crypto..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="mb-4 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                      />
-                      <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                        {filteredCoins.length === 0 && (
-                          <div className="text-gray-500 text-center py-8">
-                            Aucune crypto trouvée.
-                          </div>
-                        )}
-                        {filteredCoins.map((coin) => (
-                          <label
-                            key={coin.currency_code}
-                            className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-colors ${selectedPayCurrency === coin.currency_code ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:bg-gray-50"}`}
-                          >
-                            <input
-                              type="radio"
-                              name="pay_currency"
-                              value={coin.currency_code}
-                              checked={
-                                selectedPayCurrency === coin.currency_code
-                              }
-                              onChange={() =>
-                                setSelectedPayCurrency(coin.currency_code)
-                              }
-                              className="form-radio h-5 w-5 text-blue-600"
-                            />
-                            <img
-                              src={coin.image}
-                              alt={coin.full_name}
-                              className="w-8 h-8"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium truncate">
-                                {coin.full_name}
-                              </div>
-                              <div className="text-xs text-gray-500 truncate">
-                                {coin.currency_code.toUpperCase()}
-                              </div>
-                            </div>
-                            {coin.currency_code === "trx" && (
-                              <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold ml-2">
-                                Recommandé
-                              </span>
-                            )}
-                          </label>
-                        ))}
-                      </div>
-                    </Card>
-
-                    {/* Review Dialog */}
-                    <Dialog open={showReview} onOpenChange={setShowReview}>
-                      <DialogContent className="sm:max-w-2xl">
-                        <DialogHeader className="space-y-4">
-                          <DialogTitle className="text-2xl font-bold text-center">
-                            Détails du rechargement
-                          </DialogTitle>
-                          <DialogDescription className="text-center text-base">
-                            Vérifiez les détails avant de confirmer votre
-                            rechargement.
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        <div className="grid grid-cols-2 gap-8 py-6">
-                          {/* Left Column - Amount Details */}
-                          <div className="space-y-6">
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
-                              <div className="text-sm text-blue-600 font-medium mb-2">
-                                Montant à recharger
-                              </div>
-                              <div className="text-3xl font-bold text-blue-700">
-                                {finalAmount}€
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Right Column - Payment Method */}
-                          <div className="space-y-6">
-                            {selectedCoin && (
-                              <div className="flex items-center gap-3">
-                                <img
-                                  src={selectedCoin.image}
-                                  alt={selectedCoin.full_name}
-                                  className="w-8 h-8"
-                                />
-                                <span className="font-medium">
-                                  {selectedCoin.full_name}
-                                </span>
-                              </div>
-                            )}
-                            <Alert className="bg-yellow-50 border-yellow-200">
-                              <AlertDescription className="text-yellow-700">
-                                Important: N'envoyez que des USDT sur le réseau
-                                TRC20. Les autres réseaux ne sont pas supportés.
-                              </AlertDescription>
-                            </Alert>
-                          </div>
-                        </div>
-
-                        <Button
-                          className="w-full h-12 text-lg"
-                          onClick={handleConfirm}
-                          disabled={isLoading}
-                        >
-                          {isLoading
-                            ? "Chargement..."
-                            : "Confirmer le rechargement"}
-                        </Button>
-                      </DialogContent>
-                    </Dialog>
-
-                    {/* Payment Instructions Dialog */}
-                    <Dialog
-                      open={!!paymentAddress && !timerExpired}
-                      onOpenChange={(open) => {
-                        if (!open) {
-                          setPaymentAddress("");
-                          setPaymentId("");
-                          setPaymentResponse(null);
-                          setTimer(null);
-                          setTimerExpired(false);
-                        }
-                      }}
-                    >
-                      <DialogContent className="sm:max-w-2xl">
-                        <DialogHeader>
-                          <DialogTitle className="text-2xl font-bold text-center">
-                            Instructions de paiement
-                          </DialogTitle>
-                        </DialogHeader>
-
-                        <div className="space-y-6 py-6">
-                          {paymentResponse && (
-                            <>
-                              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
-                                <div className="text-sm text-blue-600 font-medium mb-2">
-                                  Montant à envoyer
-                                </div>
-                                <div className="text-3xl font-bold text-blue-700 flex items-center gap-2">
-                                  {paymentResponse.pay_amount}{" "}
-                                  {paymentResponse.pay_currency.toUpperCase()}
-                                  {(() => {
-                                    const coin = COINS.find(
-                                      (c) =>
-                                        c.currency_code ===
-                                        paymentResponse.pay_currency,
-                                    );
-                                    return coin ? (
-                                      <img
-                                        src={coin.image}
-                                        alt={coin.full_name}
-                                        className="w-7 h-7 inline-block align-middle"
-                                      />
-                                    ) : null;
-                                  })()}
-                                </div>
-                              </div>
-                              <div className="flex flex-col items-center justify-center">
-                                <span className="text-sm text-gray-700">
-                                  Expire dans :
-                                </span>
-                                <span className="ml-2 font-mono text-lg text-red-600">
-                                  {timer !== null
-                                    ? formatTimer(timer)
-                                    : "--:--"}
-                                </span>
-                                {timerExpired && (
-                                  <span className="text-red-600 font-semibold mt-2">
-                                    Le temps est écoulé. Cette demande de
-                                    paiement a expiré.
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-3">
-                                {(() => {
-                                  const coin = COINS.find(
-                                    (c) =>
-                                      c.currency_code ===
-                                      paymentResponse.pay_currency,
-                                  );
-                                  return coin ? (
-                                    <>
-                                      <img
-                                        src={coin.image}
-                                        alt={coin.full_name}
-                                        className="w-8 h-8"
-                                      />
-                                      <span className="font-medium">
-                                        {coin.full_name}
-                                      </span>
-                                    </>
-                                  ) : (
-                                    <span className="font-medium">
-                                      {paymentResponse.pay_currency.toUpperCase()}
-                                    </span>
-                                  );
-                                })()}
-                              </div>
-                              <div className="space-y-4">
-                                <div>
-                                  <label className="text-sm font-medium text-gray-700">
-                                    Adresse de paiement
-                                  </label>
-                                  <div className="mt-1 flex items-center gap-2">
-                                    <code className="bg-gray-100 p-2 rounded flex-1 overflow-x-auto">
-                                      {paymentResponse.pay_address}
-                                    </code>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        navigator.clipboard.writeText(
-                                          paymentResponse.pay_address,
-                                        );
-                                        toast({
-                                          title: "Copié!",
-                                          description:
-                                            "L'adresse a été copiée dans le presse-papiers.",
-                                        });
-                                      }}
-                                    >
-                                      <Copy className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </div>
-                                <Alert className="bg-yellow-50 border-yellow-200">
-                                  <AlertDescription className="text-yellow-700">
-                                    Important:
-                                    <ul className="list-disc list-inside mt-2">
-                                      <li>
-                                        Envoyez exactement le montant indiqué en{" "}
-                                        {paymentResponse.pay_currency.toUpperCase()}
-                                        .
-                                      </li>
-                                      <li>Le montant doit être exact</li>
-                                      <li>
-                                        La transaction peut prendre quelques
-                                        minutes
-                                      </li>
-                                    </ul>
-                                  </AlertDescription>
-                                </Alert>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-
-                    <div className="text-center mt-8 mb-4">
-                      <div className="text-sm lg:text-base text-black mt-2">
-                        Montant minimum de {MIN_TOPUP_USDT} USDT pour les dons
-                        en cryptomonnaies
-                      </div>
-                    </div>
-                    <Button
-                      size="lg"
-                      className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-8"
-                      onClick={handleContinue}
-                    >
-                      {isLoading
-                        ? "Chargement..."
-                        : "Payer en Crypto - " + finalAmount + "€"}
-                    </Button>
-                  </div>
-                </TabsContent>
-
-                {/* PayPal */}
+                {/* ── Contenu PayPal ───────────────────────────────────── */}
                 <TabsContent value="paypal" className="space-y-4">
                   <div className="text-center p-6">
                     <div className="bg-blue-100 p-4 rounded-lg mb-6">
@@ -837,15 +440,12 @@ export function PaymentContent() {
           </Card>
         )}
 
-        {/* Payment Method Selection Dialog */}
+        {/* ── Dialog sélection méthode Mobile ─────────────────────────── */}
         <Dialog
           open={isDialogOpen}
           onOpenChange={(open) => {
             setIsDialogOpen(open);
-            if (!open) {
-              // Reload the page when dialog is closed
-              window.location.reload();
-            }
+            if (!open) window.location.reload();
           }}
         >
           <DialogContent className="sm:max-w-md">
@@ -879,7 +479,7 @@ export function PaymentContent() {
                 >
                   <Wallet className="w-6 h-6 mr-3 text-green-600" />
                   <div className="text-left">
-                    <div className="font-semibold">Portefeuille</div>
+                    <div className="font-semibold">Portefeuille (WAVE)</div>
                     <div className="text-sm text-gray-500">
                       Paiement rapide et sécurisé
                     </div>
@@ -982,7 +582,7 @@ export function PaymentContent() {
                       maxLength={5}
                       value={bankCardData.codePostal}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, ""); // Only allow digits
+                        const value = e.target.value.replace(/\D/g, "");
                         handleInputChange("codePostal", value);
                       }}
                       className={
@@ -1034,10 +634,7 @@ export function PaymentContent() {
                   >
                     Retour
                   </Button>
-                  <Button
-                    className="flex-1"
-                    onClick={() => handleBankCardSubmit}
-                  >
+                  <Button type="submit" className="flex-1">
                     Payer {finalAmount}€
                   </Button>
                 </div>
@@ -1052,7 +649,7 @@ export function PaymentContent() {
 
 export default function PaymentContentWithSuspense() {
   return (
-    <Suspense fallback={<div>Chargement du paiement...</div>}>
+    <Suspense fallback={<div>Chargement du paiement…</div>}>
       <PaymentContent />
     </Suspense>
   );
