@@ -244,7 +244,7 @@ export function SupportSection() {
           <div className="text-center">
             <div className="bg-yellow-100 rounded p-4 text-sm text-gray-800">
               <p>
-                Paiements sécurisés via Mobile Money, Crypto, PayPal et Virement
+                Paiements sécurisés via Mobile Money, PayPal et Virement
                 bancaire
               </p>
             </div>
