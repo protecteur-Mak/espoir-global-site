@@ -132,7 +132,7 @@ export function TransparencySection() {
               </p>
               <div className="mt-4 inline-flex items-center bg-yellow-50 px-4 py-2 rounded-full border border-yellow-200">
                 <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-                <span className="text-sm font-medium text-green-700">En cours d'homologation</span>
+                <span className="text-sm font-medium text-yellow-700">En cours d'homologation</span>
               </div>
             </div>
           </div>
