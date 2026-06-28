@@ -18,7 +18,7 @@ export function TestimonialsContent() {
       id: "1",
       name: "Fatima Traoré",
       age: 45,
-      location: "Bamako, Mali",
+      location: "Afangna, Togo",
       category: "Micro-entreprise",
       story:
         "Après la mort de mon mari, je ne savais pas comment nourrir mes quatre enfants. Grâce au soutien d'Espoir Global, j'ai pu démarrer mon commerce de légumes au marché. Aujourd'hui, mes enfants mangent à leur faim et vont tous à l'école. Je peux même aider d'autres veuves de mon quartier.",
@@ -31,7 +31,7 @@ export function TestimonialsContent() {
       id: "2",
       name: "Kofi et Ama",
       age: 8,
-      location: "Kumasi, Ghana",
+      location: "Cotonou, Bénin",
       category: "Éducation",
       story:
         "Nous sommes frère et sœur et nous avons perdu nos parents dans un accident. Notre grand-mère ne pouvait pas payer l'école. Maintenant, grâce à votre aide, nous allons à l'école tous les jours ! Nous apprenons l'anglais, les mathématiques et nous rêvons de devenir médecins pour aider les autres.",
@@ -44,7 +44,7 @@ export function TestimonialsContent() {
       id: "3",
       name: "Aisha Diallo",
       age: 32,
-      location: "Dakar, Sénégal",
+      location: "Anfoin, Togo",
       category: "Autonomisation",
       story:
         "Veuve avec trois enfants, je vendais quelques fruits dans la rue pour survivre. Le programme de micro-crédit m'a permis d'agrandir mon commerce. Maintenant, j'ai un étal permanent au marché et j'emploie même deux autres femmes. Mes enfants sont fiers de leur maman !",
@@ -57,7 +57,7 @@ export function TestimonialsContent() {
       id: "4",
       name: "Les enfants de l'école",
       age: 9,
-      location: "Ouagadougou, Burkina Faso",
+      location: "Ouida, Bénin",
       category: "Éducation collective",
       story:
         "Nous sommes une classe d'orphelins et d'enfants vulnérables. Grâce à Espoir Global, notre école a été rénovée et nous avons maintenant des livres, des cahiers et même un repas chaud chaque jour. Nous sommes si heureux d'apprendre ensemble !",
@@ -70,7 +70,7 @@ export function TestimonialsContent() {
       id: "5",
       name: "Aminata Keita",
       age: 38,
-      location: "Conakry, Guinée",
+      location: "Tabligbo, Togo",
       category: "Commerce",
       story:
         "Après avoir perdu mon mari, je me suis retrouvée seule avec cinq enfants. Le marché était ma seule option, mais je n'avais pas de capital. Grâce au soutien reçu, j'ai pu acheter des marchandises en gros. Aujourd'hui, mon commerce prospère et mes enfants ont un avenir.",
@@ -83,7 +83,7 @@ export function TestimonialsContent() {
       id: "6",
       name: "Samuel et ses amis",
       age: 10,
-      location: "Accra, Ghana",
+      location: "Akati, Ghana",
       category: "Sport et éducation",
       story:
         "Nous vivions dans la rue et nous n'allions pas à l'école. Le centre d'Espoir Global nous a accueillis et nous a donné une chance. Maintenant, nous étudions le matin et nous faisons du sport l'après-midi. Nous sommes forts et nous avons des rêves !",
@@ -94,9 +94,9 @@ export function TestimonialsContent() {
     },
     {
       id: "7",
-      name: "Mariam Coulibaly",
+      name: "Mariam Bateme",
       age: 41,
-      location: "Abidjan, Côte d'Ivoire",
+      location: "Agbodrafo, Togo",
       category: "Formation professionnelle",
       story:
         "Veuve depuis trois ans, je ne savais que faire pour nourrir mes enfants. La formation en couture que j'ai reçue a changé ma vie. J'ai maintenant mon propre atelier et je forme d'autres femmes. Ensemble, nous créons de beaux vêtements et nous gagnons notre vie dignement.",
@@ -108,7 +108,7 @@ export function TestimonialsContent() {
       id: "9",
       name: "Grace Mensah",
       age: 29,
-      location: "Tamale, Ghana",
+      location: "Aveve, Togo",
       category: "Entrepreneuriat",
       story:
         "Jeune veuve avec deux enfants, je rêvais de créer mon entreprise mais n'avais pas les moyens. Le programme de soutien aux femmes entrepreneures m'a donné ma chance. Aujourd'hui, je vends des produits locaux et j'ai même ouvert une petite boutique. Mes enfants sont ma fierté !",
@@ -153,7 +153,7 @@ export function TestimonialsContent() {
               {statsVisible ? (
                 <CountUp
                   start={0}
-                  end={5280}
+                  end={152}
                   duration={2.5}
                   separator=" "
                   suffix="+"
@@ -177,7 +177,7 @@ export function TestimonialsContent() {
               {statsVisible ? (
                 <CountUp
                   start={0}
-                  end={27}
+                  end={3}
                   duration={2}
                   useEasing={true}
                   easingFn={(t, b, c, d) => {
@@ -199,7 +199,7 @@ export function TestimonialsContent() {
               {statsVisible ? (
                 <CountUp
                   start={0}
-                  end={8}
+                  end={5}
                   duration={1.8}
                   useEasing={true}
                   easingFn={(t, b, c, d) => {
