@@ -233,7 +233,6 @@ export function ContactSection() {
                   <div className="min-w-0 flex-1">
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors break-words">
                       <span className="block">contact@espoir-global.org</span>
-                      <span className="block">ongsoutienplus@gmail.com</span>
                     </p>
                     <p className="text-sm text-gray-500 md:text-gray-600">
                       Pour toute question générale
@@ -246,6 +245,9 @@ export function ContactSection() {
                   <div className="min-w-0 flex-1">
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors">
                       +228 91 16 49 52
+                    </p>
+                    <p className="text-sm text-gray-500">
+                       Lun - Vend , 09h - 18h
                     </p>
                     
                   </div>
