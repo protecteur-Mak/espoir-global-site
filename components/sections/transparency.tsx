@@ -130,9 +130,9 @@ export function TransparencySection() {
                 Nous sommes certifiés par les organismes de contrôle les plus exigeants pour garantir la transparence et
                 l'efficacité de nos actions humanitaires.
               </p>
-              <div className="mt-4 inline-flex items-center bg-green-50 px-4 py-2 rounded-full border border-green-200">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                <span className="text-sm font-medium text-green-700">Certification Validée</span>
+              <div className="mt-4 inline-flex items-center bg-yellow-50 px-4 py-2 rounded-full border border-yellow-200">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                <span className="text-sm font-medium text-green-700">En cours d'homologation</span>
               </div>
             </div>
           </div>
@@ -151,9 +151,9 @@ export function TransparencySection() {
                 className="w-full h-auto object-contain"
               />
             </div>
-            <div className="inline-flex items-center bg-green-50 px-3 py-1 rounded-full border border-green-200">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
-              <span className="text-xs font-medium text-green-700">Certifié</span>
+            <div className="inline-flex items-center bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
+              <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></div>
+              <span className="text-xs font-medium text-green-700">En cours d'homologation</span>
             </div>
           </div>
         </div>
