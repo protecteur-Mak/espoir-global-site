@@ -314,7 +314,7 @@ export function PaymentContent() {
                     </p>
                     <div className="flex items-center justify-center space-x-2">
                       <span className="font-mono text-sm bg-white px-3 py-2 rounded border">
-                        soutienplus@gmail.com
+                        ongsoutienplus@gmail.com
                       </span>
                     </div>
                   </div>
@@ -323,7 +323,7 @@ export function PaymentContent() {
                     <Button
                       size="lg"
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8"
-                      onClick={() => copyToClipboard("soutienplus@gmail.com", "paypal")}
+                      onClick={() => copyToClipboard("ongsoutienplus@gmail.com", "paypal")}
                     >
                       {copiedField === "paypal" ? (
                         <CheckCircle className="w-5 h-5 mr-2" />
