@@ -54,9 +54,9 @@ export const useAppStore = create<AppState>()(
       impactStories: [
         {
           id: "1",
-          name: "Fatima",
+          name: "Fatima Traoré",
           age: 45,
-          location: "Mali",
+          location: "Togo",
           category: "Micro-entreprise",
           story:
             "Grâce au soutien reçu, j'ai pu lancer mon commerce de légumes au marché local et subvenir aux besoins de mes enfants après le décès de mon mari.",
@@ -66,7 +66,7 @@ export const useAppStore = create<AppState>()(
           id: "2",
           name: "Kofi & Ama",
           age: 8,
-          location: "Ghana",
+          location: "Cotonou",
           category: "Éducation",
           story:
             "Nous pouvons maintenant aller à l'école tous les jours et nous espérons devenir médecins pour aider les autres comme on nous a aidés.",
@@ -74,9 +74,9 @@ export const useAppStore = create<AppState>()(
         },
         {
           id: "3",
-          name: "Aisha",
+          name: "Aisha Diallo",
           age: 32,
-          location: "Sénégal",
+          location: "Togo",
           category: "Autonomisation",
           story:
             "Le programme m'a permis de développer mon commerce de fruits. Aujourd'hui, je peux nourrir ma famille et même employer d'autres femmes.",
