@@ -46,9 +46,9 @@ export const useAppStore = create<AppState>()(
       activeSection: "accueil",
 
       statistics: {
-        peopleHelped: 5280,
-        countries: 27,
-        activeProjects: 42,
+        peopleHelped: 152,
+        countries: 3,
+        activeProjects: 5,
       },
 
       impactStories: [
