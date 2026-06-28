@@ -144,7 +144,7 @@ export function TransparencySection() {
           <div className="text-center">
             <div className="relative w-32 mx-auto mb-4">
               <Image
-                src="/images/certifications/certificate-badge.png"
+                src="/images/certifications/certificate-badge-pending.png"
                 alt="Certification officielle"
                 width={128}
                 height={128}
