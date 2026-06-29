@@ -27,23 +27,39 @@ export async function POST(req: Request) {
 
     console.log("Tentative de connexion à l'API CinetPay...");
 
+    // Ajout d'un timeout de 10 secondes pour éviter les blocages infinis
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     const response = await fetch('https://api-checkout.cinetpay.com/v2/payment', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive'
+      },
       body: JSON.stringify(payload),
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     const data = await response.json();
     
-    // C'est ici que tu verras le vrai message d'erreur dans les Logs Vercel
     console.log("Réponse brute de CinetPay :", JSON.stringify(data));
 
     return NextResponse.json(data);
 
   } catch (error: any) {
     console.error("Erreur fatale de connexion :", error.message);
+    
+    // Distinguer le timeout des autres erreurs de réseau
+    const errorMessage = error.name === 'AbortError' 
+      ? "La connexion à CinetPay a expiré" 
+      : error.message;
+
     return NextResponse.json(
-      { message: "Erreur serveur interne", detail: error.message }, 
+      { message: "Erreur serveur interne", detail: errorMessage }, 
       { status: 500 }
     );
   }
