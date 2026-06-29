@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       transaction_id: Date.now().toString(),
     };
 
-    console.log("Envoi de la requête à CinetPay...");
+    console.log("Tentative de connexion à l'API CinetPay...");
 
     const response = await fetch('https://api-checkout.cinetpay.com/v2/payment', {
       method: 'POST',
@@ -35,23 +35,15 @@ export async function POST(req: Request) {
 
     const data = await response.json();
     
-    // Loguer la réponse brute pour le support CinetPay
-    console.log("Réponse brute reçue de CinetPay :", JSON.stringify(data));
-
-    if (!response.ok) {
-        console.error("CinetPay a rejeté la requête avec le statut :", response.status);
-    }
+    // C'est ici que tu verras le vrai message d'erreur dans les Logs Vercel
+    console.log("Réponse brute de CinetPay :", JSON.stringify(data));
 
     return NextResponse.json(data);
 
   } catch (error: any) {
-    // Capturer l'erreur exacte du fetch (ex: DNS, TimeOut, etc.)
-    console.error("Erreur fatale dans le bloc try/catch :", error.message);
+    console.error("Erreur fatale de connexion :", error.message);
     return NextResponse.json(
-      { 
-        message: "Erreur serveur interne", 
-        detail: error.message 
-      }, 
+      { message: "Erreur serveur interne", detail: error.message }, 
       { status: 500 }
     );
   }
