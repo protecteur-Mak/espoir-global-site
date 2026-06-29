@@ -27,39 +27,26 @@ export async function POST(req: Request) {
 
     console.log("Tentative de connexion à l'API CinetPay...");
 
-    // Ajout d'un timeout de 10 secondes pour éviter les blocages infinis
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-
     const response = await fetch('https://api-checkout.cinetpay.com/v2/payment', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Connection': 'keep-alive'
+        'Accept': 'application/json'
       },
       body: JSON.stringify(payload),
-      signal: controller.signal
+      // Force la requête à ignorer tout cache intermédiaire
+      cache: 'no-store' 
     });
 
-    clearTimeout(timeoutId);
-
     const data = await response.json();
-    
     console.log("Réponse brute de CinetPay :", JSON.stringify(data));
 
     return NextResponse.json(data);
 
   } catch (error: any) {
     console.error("Erreur fatale de connexion :", error.message);
-    
-    // Distinguer le timeout des autres erreurs de réseau
-    const errorMessage = error.name === 'AbortError' 
-      ? "La connexion à CinetPay a expiré" 
-      : error.message;
-
     return NextResponse.json(
-      { message: "Erreur serveur interne", detail: errorMessage }, 
+      { message: "Erreur serveur interne", detail: error.message }, 
       { status: 500 }
     );
   }
