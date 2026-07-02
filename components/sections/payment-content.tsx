@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,7 +85,6 @@ export function PaymentContent() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  // Gestion de la soumission adaptée à FedaPay
   const handlePayment = async (
     channel: "MOBILE_MONEY" | "CREDIT_CARD" | "WALLET"
   ) => {
@@ -111,15 +110,13 @@ export function PaymentContent() {
 
       const result = await response.json();
 
-      // Adaptation FedaPay : On cherche la clé transaction et sa checkout_url
-      if (result.transaction && result.transaction.checkout_url) {
-        window.location.href = result.transaction.checkout_url;
-      } else if (result.checkout_url) {
+      // Redirection FedaPay unifiée[span_1](start_span)[span_1](end_span)
+      if (result.checkout_url) {
         window.location.href = result.checkout_url;
       } else {
         toast({
           title: "Erreur de configuration",
-          description: result.error || "Impossible de générer le lien FedaPay.",
+          description: "Impossible de générer le lien d'autorisation de paiement.",
           variant: "destructive",
         });
       }
@@ -127,7 +124,7 @@ export function PaymentContent() {
       console.error("Payment error:", error);
       toast({
         title: "Erreur de paiement",
-        description: "Une erreur est survenue lors de la communication avec le serveur.",
+        description: "Une erreur est survenue lors de l'envoi de la requête.",
         variant: "destructive",
       });
     }
@@ -534,4 +531,4 @@ export default function PaymentContentWithSuspense() {
       <PaymentContent />
     </Suspense>
   );
-}                    
+}
