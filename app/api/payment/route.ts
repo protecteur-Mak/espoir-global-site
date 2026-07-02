@@ -2,16 +2,12 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    // 1. Lire tout le contenu de la requête
     const text = await req.text();
 
-    // 2. Vérification critique : ignorer les requêtes vides (les doublons)
-    // Cela empêche l'erreur SyntaxError sur les requêtes vides envoyées en second
     if (!text || text.trim().length === 0) {
-      return new NextResponse(null, { status: 204 }); // 204 No Content : succès sans rien retourner
+      return new NextResponse(null, { status: 204 });
     }
 
-    // 3. Traitement sécurisé des données
     const body = JSON.parse(text);
     console.log(">>> Traitement du paiement pour :", body.amount);
 
@@ -21,7 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Données manquantes" }, { status: 400 });
     }
 
-    // 4. Appel FedaPay
+    // Appel FedaPay
     const response = await fetch('https://api.fedapay.com/v1/transactions', {
       method: 'POST',
       headers: {
@@ -40,12 +36,27 @@ export async function POST(req: Request) {
       })
     });
 
-    const data = await response.json();
+    // 🔴 CORRECTION : Lecture sécurisée de la réponse FedaPay
+    const fedaPayRawText = await response.text();
+    console.log(">>> Réponse brute de FedaPay :", fedaPayRawText);
+
+    let data;
+    try {
+      data = fedaPayRawText ? JSON.parse(fedaPayRawText) : {};
+    } catch (parseError) {
+      console.error("Impossible de parser le JSON de FedaPay. Statut :", response.status);
+      return NextResponse.json({ error: "FedaPay a renvoyé une réponse invalide" }, { status: 502 });
+    }
+
+    if (!response.ok) {
+        console.error("Erreur retournée par FedaPay :", data);
+        return NextResponse.json(data, { status: response.status });
+    }
+
     return NextResponse.json(data);
 
-  } catch (error) {
-    // 5. Bloc de sécurité : Si une erreur survient sur la requête principale, on log, sinon on ignore
-    console.error("Erreur serveur :", error);
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Erreur serveur globale :", error.message);
+    return NextResponse.json({ error: "Erreur serveur interne" }, { status: 500 });
   }
 }
