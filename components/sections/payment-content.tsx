@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,7 +70,7 @@ export function PaymentContent() {
   const EURTOXOF = 655;
   const finalAmount = selectedAmount || Number.parseFloat(customAmount) || 0;
   const finalAmountXOF = Math.round(finalAmount * EURTOXOF);
-  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500,1000];
+  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500, 1000];
 
   useEffect(() => {
     const amount = new URLSearchParams(window.location.search).get("amount");
@@ -85,6 +85,7 @@ export function PaymentContent() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  // Gestion de la soumission adaptée à FedaPay
   const handlePayment = async (
     channel: "MOBILE_MONEY" | "CREDIT_CARD" | "WALLET"
   ) => {
@@ -110,12 +111,15 @@ export function PaymentContent() {
 
       const result = await response.json();
 
-      if (result.code === "201" && result.data?.payment_url) {
-        window.location.href = result.data.payment_url;
+      // Adaptation FedaPay : On cherche la clé transaction et sa checkout_url
+      if (result.transaction && result.transaction.checkout_url) {
+        window.location.href = result.transaction.checkout_url;
+      } else if (result.checkout_url) {
+        window.location.href = result.checkout_url;
       } else {
         toast({
-          title: "Erreur de paiement",
-          description: result.description || "Le paiement a échoué.",
+          title: "Erreur de configuration",
+          description: result.error || "Impossible de générer le lien FedaPay.",
           variant: "destructive",
         });
       }
@@ -123,7 +127,7 @@ export function PaymentContent() {
       console.error("Payment error:", error);
       toast({
         title: "Erreur de paiement",
-        description: "Une erreur est survenue lors du paiement.",
+        description: "Une erreur est survenue lors de la communication avec le serveur.",
         variant: "destructive",
       });
     }
@@ -146,7 +150,7 @@ export function PaymentContent() {
       return;
     }
 
-    if (bankCardData.codePostal.length !== 5 || !/^d{5}$/.test(bankCardData.codePostal)) {
+    if (bankCardData.codePostal.length !== 5 || !/^\d{5}$/.test(bankCardData.codePostal)) {
       toast({
         title: "Code postal invalide",
         description: "Le code postal doit contenir exactement 5 chiffres.",
@@ -343,7 +347,6 @@ export function PaymentContent() {
           open={isDialogOpen}
           onOpenChange={(open) => {
             setIsDialogOpen(open);
-            if (!open) window.location.reload();
           }}
         >
           <DialogContent className="sm:max-w-md">
@@ -531,4 +534,4 @@ export default function PaymentContentWithSuspense() {
       <PaymentContent />
     </Suspense>
   );
-}
+}                    
