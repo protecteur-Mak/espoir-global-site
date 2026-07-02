@@ -4,6 +4,7 @@ export async function POST(req: Request) {
   try {
     const text = await req.text();
 
+    // 1. Éviter le crash sur les requêtes vides
     if (!text || text.trim().length === 0) {
       return new NextResponse(null, { status: 204 });
     }
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Clé API manquante sur le serveur" }, { status: 500 });
     }
 
-    // Appel FedaPay avec la structure officiellement attendue
+    // 2. Requête vers FedaPay avec la structure attendue
     const response = await fetch('https://api.fedapay.com/v1/transactions', {
       method: 'POST',
       headers: {
@@ -36,22 +37,19 @@ export async function POST(req: Request) {
         currency: { iso: "XOF" },
         callback_url: "https://espoir-global.org/confirmation",
         customer: {
-          firstname: body.customer_surname || "Donateur", // Prénom
-          lastname: body.customer_name || "Anonyme",     // Nom
+          firstname: body.customer_surname || "Donateur",
+          lastname: body.customer_name || "Anonyme",
           email: customer_email,
           phone_number: {
             number: customer_phone_number || "00000000",
-            country: "tg" // Code pays pour le Togo (ou s'adapte selon tes besoins)
+            country: "tg"
           }
         }
       })
     });
 
     const fedaPayRawText = await response.text();
-    
-    // 💡 LOG CRITIQUE : On affiche le statut HTTP retourné par FedaPay
     console.log(`>>> FedaPay a répondu avec le statut : ${response.status}`);
-    console.log(">>> Réponse brute de FedaPay :", fedaPayRawText);
 
     let data;
     try {
@@ -65,7 +63,14 @@ export async function POST(req: Request) {
         return NextResponse.json(data, { status: response.status });
     }
 
-    return NextResponse.json(data);
+    // 3. Extraction et normalisation de l'URL pour le Frontend
+    const transactionData = data["v1/transaction"] || data;
+    const redirectUrl = transactionData.payment_url || data.checkout_url;
+
+    return NextResponse.json({
+      success: true,
+      checkout_url: redirectUrl
+    });
 
   } catch (error: any) {
     console.error("Erreur serveur globale :", error.message);
