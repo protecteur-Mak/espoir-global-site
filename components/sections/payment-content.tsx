@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 
 function TabImage({
@@ -50,6 +51,10 @@ export function PaymentContent() {
   const [activeTab, setActiveTab] = useState<"mobile" | "paypal">("mobile");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
+  
+  // Nouveaux états pour le téléphone et le pays obligatoires
+  const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("tg");
 
   const { toast } = useToast();
 
@@ -71,12 +76,23 @@ export function PaymentContent() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  // Envoi direct vers l'API FedaPay sans passer par des formulaires intermédiaires
-  const handlePayment = async () => {
+  const handlePayment = async (e: React.FormEvent) => {
+    e.preventDefault(); // Empêche le rechargement de la page
+
     if (finalAmount <= 0) {
       toast({
         title: "Montant invalide",
         description: "Veuillez choisir ou entrer un montant pour votre don.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const cleanPhone = phone.replace(/\s+/g, "");
+    if (cleanPhone.length < 8) {
+      toast({
+        title: "Numéro invalide",
+        description: "Veuillez entrer un numéro de téléphone valide.",
         variant: "destructive",
       });
       return;
@@ -91,7 +107,9 @@ export function PaymentContent() {
           amount: finalAmountXOF,
           currency: "XOF",
           description: "Don pour Espoir Global",
-          customer_email: "donateur@espoir-global.org", // Email par défaut si non fourni
+          customer_email: "donateur@espoir-global.org",
+          customer_phone_number: cleanPhone,
+          // Optionnel: on peut adapter dynamiquement le pays si nécessaire dans ton api
         }),
       });
 
@@ -103,7 +121,7 @@ export function PaymentContent() {
         setLoadingPayment(false);
         toast({
           title: "Erreur",
-          description: "Impossible de générer le lien de paiement FedaPay.",
+          description: result.error || "Impossible de générer le lien de paiement FedaPay.",
           variant: "destructive",
         });
       }
@@ -307,35 +325,71 @@ export function PaymentContent() {
           </CardContent>
         </Card>
 
-        {/* 🎯 Dialogue de confirmation court demandé */}
+        {/* 🎯 Boîte de dialogue intégrant le choix de l'indicatif pays et le numéro de téléphone */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-center text-lg font-bold">Confirmation du don</DialogTitle>
-              <DialogDescription className="text-center text-base pt-4">
+              <DialogDescription className="text-center text-base pt-2">
                 Vous êtes en train de faire un don de <strong className="text-indigo-600 text-lg">{finalAmount}$</strong>.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="flex gap-3 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsDialogOpen(false)}
-                className="flex-1 h-12"
-                disabled={loadingPayment}
-              >
-                Annuler
-              </Button>
-              <Button 
-                type="button" 
-                onClick={handlePayment} 
-                className="flex-1 bg-orange-500 hover:bg-orange-600 h-12 text-white font-semibold"
-                disabled={loadingPayment}
-              >
-                {loadingPayment ? "Chargement..." : "Continuer"}
-              </Button>
-            </div>
+            <form onSubmit={handlePayment} className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="dialog-phone" className="font-medium text-sm">
+                  Numéro de téléphone (Requis par la passerelle de paiement)
+                </Label>
+                <div className="flex gap-2">
+                  <div className="w-1/3">
+                    <Select value={countryCode} onValueChange={setCountryCode}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="tg">🇹🇬 +228</SelectItem>
+                        <SelectItem value="bj">🇧🇯 +229</SelectItem>
+                        <SelectItem value="bf">🇧🇫 +226</SelectItem>
+                        <SelectItem value="ci">🇨🇮 +225</SelectItem>
+                        <SelectItem value="sn">🇸🇳 +221</SelectItem>
+                        <SelectItem value="ml">🇲🇱 +223</SelectItem>
+                        <SelectItem value="ne">🇳🇪 +227</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      id="dialog-phone"
+                      type="tel"
+                      placeholder="Ex: 90000000"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                      required
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                  className="flex-1 h-12"
+                  disabled={loadingPayment}
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 h-12 text-white font-semibold"
+                  disabled={loadingPayment || phone.trim().length < 8}
+                >
+                  {loadingPayment ? "Chargement..." : "Continuer"}
+                </Button>
+              </div>
+            </form>
           </DialogContent>
         </Dialog>
       </div>
@@ -349,4 +403,4 @@ export default function PaymentContentWithSuspense() {
       <PaymentContent />
     </Suspense>
   );
-}
+}           
