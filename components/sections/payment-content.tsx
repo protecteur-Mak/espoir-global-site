@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Smartphone, CreditCard, Wallet, Copy, CheckCircle } from "lucide-react";
+import { ArrowLeft, Smartphone, CheckCircle, Copy } from "lucide-react";
 import { FaPaypal } from "react-icons/fa";
 import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
@@ -16,10 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
-
-type PaymentMethod = "MOBILE_MONEY" | "CREDIT_CARD" | "WALLET" | "PAYPAL";
 
 function TabImage({
   src,
@@ -31,7 +28,6 @@ function TabImage({
   fallback: React.ReactNode;
 }) {
   const [failed, setFailed] = useState(false);
-
   if (failed) return <>{fallback}</>;
 
   return (
@@ -53,17 +49,7 @@ export function PaymentContent() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"mobile" | "paypal">("mobile");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [showBankCardForm, setShowBankCardForm] = useState(false);
-  const [bankCardData, setBankCardData] = useState({
-    nom: "",
-    prenom: "",
-    telephone: "",
-    email: "",
-    adresse: "",
-    ville: "",
-    pays: "",
-    codePostal: "",
-  });
+  const [loadingPayment, setLoadingPayment] = useState(false);
 
   const { toast } = useToast();
 
@@ -85,9 +71,18 @@ export function PaymentContent() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handlePayment = async (
-    channel: "MOBILE_MONEY" | "CREDIT_CARD" | "WALLET"
-  ) => {
+  // Envoi direct vers l'API FedaPay sans passer par des formulaires intermédiaires
+  const handlePayment = async () => {
+    if (finalAmount <= 0) {
+      toast({
+        title: "Montant invalide",
+        description: "Veuillez choisir ou entrer un montant pour votre don.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoadingPayment(true);
     try {
       const response = await fetch("/api/payment", {
         method: "POST",
@@ -96,69 +91,31 @@ export function PaymentContent() {
           amount: finalAmountXOF,
           currency: "XOF",
           description: "Don pour Espoir Global",
-          customer_name: bankCardData.nom || "Donateur",
-          customer_surname: bankCardData.prenom || "Anonyme",
-          customer_email: bankCardData.email || "donateur@anonyme.com",
-          customer_phone_number: bankCardData.telephone || "0000000000",
-          customer_address: bankCardData.adresse || "Anonyme",
-          customer_city: bankCardData.ville || "Anonyme",
-          customer_country: bankCardData.pays || "TG",
-          customer_zip_code: bankCardData.codePostal || "12345",
-          payment_method: channel,
+          customer_email: "donateur@espoir-global.org", // Email par défaut si non fourni
         }),
       });
 
       const result = await response.json();
 
-      // Redirection FedaPay unifiée[span_1](start_span)[span_1](end_span)
       if (result.checkout_url) {
         window.location.href = result.checkout_url;
       } else {
+        setLoadingPayment(false);
         toast({
-          title: "Erreur de configuration",
-          description: "Impossible de générer le lien d'autorisation de paiement.",
+          title: "Erreur",
+          description: "Impossible de générer le lien de paiement FedaPay.",
           variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Payment error:", error);
+      setLoadingPayment(false);
       toast({
-        title: "Erreur de paiement",
-        description: "Une erreur est survenue lors de l'envoi de la requête.",
+        title: "Erreur réseau",
+        description: "Une erreur est survenue lors de la communication avec le serveur.",
         variant: "destructive",
       });
     }
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setBankCardData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleBankCardSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const requiredFields = Object.values(bankCardData);
-    if (requiredFields.some((field) => !field.trim())) {
-      toast({
-        title: "Champs requis",
-        description: "Veuillez remplir tous les champs obligatoires.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (bankCardData.codePostal.length !== 5 || !/^\d{5}$/.test(bankCardData.codePostal)) {
-      toast({
-        title: "Code postal invalide",
-        description: "Le code postal doit contenir exactement 5 chiffres.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    await handlePayment("CREDIT_CARD");
-    setIsDialogOpen(false);
-    setShowBankCardForm(false);
   };
 
   return (
@@ -287,7 +244,17 @@ export function PaymentContent() {
                   <Button
                     size="lg"
                     className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8"
-                    onClick={() => setIsDialogOpen(true)}
+                    onClick={() => {
+                      if (finalAmount > 0) {
+                        setIsDialogOpen(true);
+                      } else {
+                        toast({
+                          title: "Montant requis",
+                          description: "Veuillez choisir un montant avant de payer.",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
                   >
                     Payer maintenant {finalAmount}$
                   </Button>
@@ -340,184 +307,35 @@ export function PaymentContent() {
           </CardContent>
         </Card>
 
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={(open) => {
-            setIsDialogOpen(open);
-          }}
-        >
+        {/* 🎯 Dialogue de confirmation court demandé */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Choisissez votre méthode de paiement</DialogTitle>
-              <DialogDescription>
-                Sélectionnez la méthode de paiement qui vous convient le mieux.
+              <DialogTitle className="text-center text-lg font-bold">Confirmation du don</DialogTitle>
+              <DialogDescription className="text-center text-base pt-4">
+                Vous êtes en train de faire un don de <strong className="text-indigo-600 text-lg">{finalAmount}$</strong>.
               </DialogDescription>
             </DialogHeader>
 
-            {!showBankCardForm ? (
-              <div className="space-y-4">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4 px-6"
-                  onClick={() => handlePayment("MOBILE_MONEY")}
-                >
-                  <Smartphone className="w-6 h-6 mr-3 text-orange-600" />
-                  <div className="text-left">
-                    <div className="font-semibold">Mobile Money</div>
-                    <div className="text-sm text-gray-500">Orange Money, MTN Money, etc.</div>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4 px-6"
-                  onClick={() => handlePayment("WALLET")}
-                >
-                  <Wallet className="w-6 h-6 mr-3 text-green-600" />
-                  <div className="text-left">
-                    <div className="font-semibold">Portefeuille WAVE</div>
-                    <div className="text-sm text-gray-500">Paiement rapide et sécurisé</div>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full justify-start h-auto py-4 px-6"
-                  onClick={() => setShowBankCardForm(true)}
-                >
-                  <CreditCard className="w-6 h-6 mr-3 text-blue-600" />
-                  <div className="text-left">
-                    <div className="font-semibold">Carte bancaire</div>
-                    <div className="text-sm text-gray-500">Visa, Mastercard, etc.</div>
-                  </div>
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleBankCardSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="nom">Nom</Label>
-                    <Input
-                      id="nom"
-                      value={bankCardData.nom}
-                      onChange={(e) => handleInputChange("nom", e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="prenom">Prénom</Label>
-                    <Input
-                      id="prenom"
-                      value={bankCardData.prenom}
-                      onChange={(e) => handleInputChange("prenom", e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="telephone">Numéro de téléphone</Label>
-                  <Input
-                    id="telephone"
-                    type="tel"
-                    value={bankCardData.telephone}
-                    onChange={(e) => handleInputChange("telephone", e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={bankCardData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="adresse">Adresse</Label>
-                  <Input
-                    id="adresse"
-                    value={bankCardData.adresse}
-                    onChange={(e) => handleInputChange("adresse", e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="ville">Ville</Label>
-                    <Input
-                      id="ville"
-                      value={bankCardData.ville}
-                      onChange={(e) => handleInputChange("ville", e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="codePostal">Code postal</Label>
-                    <Input
-                      id="codePostal"
-                      type="text"
-                      pattern="[0-9]{5}"
-                      maxLength={5}
-                      value={bankCardData.codePostal}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, "");
-                        handleInputChange("codePostal", value);
-                      }}
-                      className={
-                        bankCardData.codePostal.length > 0 && bankCardData.codePostal.length !== 5
-                          ? "border-red-500 focus-visible:border-red-500"
-                          : ""
-                      }
-                      placeholder="12345"
-                      required
-                    />
-                    {bankCardData.codePostal.length > 0 && bankCardData.codePostal.length !== 5 && (
-                      <p className="text-red-500 text-xs mt-1">
-                        Le code postal doit contenir exactement 5 chiffres.
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="pays">Pays</Label>
-                  <Select value={bankCardData.pays} onValueChange={(value) => handleInputChange("pays", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionnez votre pays" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Togo">Togo</SelectItem>
-                      <SelectItem value="Bénin">Bénin</SelectItem>
-                      <SelectItem value="Burkina Faso">Burkina Faso</SelectItem>
-                      <SelectItem value="Côte d'Ivoire">Côte d'Ivoire</SelectItem>
-                      <SelectItem value="Mali">Mali</SelectItem>
-                      <SelectItem value="Niger">Niger</SelectItem>
-                      <SelectItem value="Sénégal">Sénégal</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex gap-2 pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowBankCardForm(false)}
-                    className="flex-1"
-                  >
-                    Retour
-                  </Button>
-                  <Button type="submit" className="flex-1">
-                    Payer {finalAmount}$
-                  </Button>
-                </div>
-              </form>
-            )}
+            <div className="flex gap-3 pt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                className="flex-1 h-12"
+                disabled={loadingPayment}
+              >
+                Annuler
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handlePayment} 
+                className="flex-1 bg-orange-500 hover:bg-orange-600 h-12 text-white font-semibold"
+                disabled={loadingPayment}
+              >
+                {loadingPayment ? "Chargement..." : "Continuer"}
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
