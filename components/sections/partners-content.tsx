@@ -320,7 +320,7 @@ export function PartnersContent() {
             <div className="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full opacity-20 -z-10"></div>
             <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full opacity-20 -z-10"></div>
 
-            <div className="flex justify-center">
+            <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
               {donors.map((donor) => (
                 <div
                   key={donor.id}
