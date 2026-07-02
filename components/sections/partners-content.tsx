@@ -48,6 +48,17 @@ const donors: Donor[] = [
     badgeColor: "from-yellow-400 to-yellow-600",
     accentColor: "from-indigo-500/10 to-purple-500/10",
   },
+  {
+    id: "TogoMarket", // Un identifiant unique sans espace
+    name: "TogoMarket", // Nom à afficher
+    image: "/images/team/TogoMarket.png", // Le chemin vers sa photo déposée dans ton dossier public
+    location: "Lomé, Togo", // Sa ville ou son pays
+    whatsapp: "22870703131", // Son numéro WhatsApp sans le "+" ni d'espace
+    phone: "+228 70 70 31 31", // Son numéro affiché au clic
+    badge: "⭐ VIP",
+    badgeColor: "from-yellow-400 to-yellow-600",
+    accentColor: "from-indigo-500/10 to-purple-500/10",
+  },
 ];
 
 export function PartnersContent() {
