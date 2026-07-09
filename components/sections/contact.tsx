@@ -282,7 +282,7 @@ export function ContactSection() {
 
               <div className="flex justify-center space-x-6 md:space-x-8">
                 <a
-                  href="https://vm.tiktok.com/espoirglobal"
+                  href="https://vm.tiktok.com/@espoirglobal"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-11 h-11 md:group md:flex-col md:items-center bg-black md:bg-gradient-to-br md:from-gray-800 md:to-black text-white rounded-full md:rounded-2xl hover:bg-gray-800 md:w-16 md:h-16 transition-colors md:mb-3 md:shadow-xl md:group-hover:shadow-2xl md:transform md:group-hover:scale-110 md:transition-all md:duration-300"
