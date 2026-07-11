@@ -62,7 +62,7 @@ const donors: Donor[] = [
   {
     id: "Pr. FONDATION ALODO", // Un identifiant unique sans espace
     name: "Pr. FONDATION ALODO", // Nom à afficher
-    image: "/images/team/Pr. FONDATION-ALODO.png", // Le chemin vers sa photo déposée dans ton dossier public
+    image: "/images/team/Pr. FONDATION ALODO.png", // Le chemin vers sa photo déposée dans ton dossier public
     location: "Aneho, Togo", // Sa ville ou son pays
     whatsapp: "22890027310", // Son numéro WhatsApp sans le "+" ni d'espace
     phone: "+228 90 02 73 10", // Son numéro affiché au clic
