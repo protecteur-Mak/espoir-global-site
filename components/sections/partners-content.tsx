@@ -52,7 +52,7 @@ const donors: Donor[] = [
     id: "TogoMarket", // Un identifiant unique sans espace
     name: "TogoMarket", // Nom à afficher
     image: "/images/team/TogoMarket.png", // Le chemin vers sa photo déposée dans ton dossier public
-    location: "Lomé, Togo", // Sa ville ou son pays
+    location: "togomarket.site", // Sa ville ou son pays
     whatsapp: "22870703131", // Son numéro WhatsApp sans le "+" ni d'espace
     phone: "+228 70 70 31 31", // Son numéro affiché au clic
     badge: "⭐ VIP",
