@@ -354,9 +354,20 @@ export function PartnersContent() {
                       <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
                         {donor.name}
                       </h3>
-                      <div className="flex items-center justify-center gap-1 text-sm text-gray-500 mb-3">
-                        <MapPin className="w-3 h-3" />
-                        {donor.location}
+                      <div className="flex items-center justify-center">
+                          <MapPin className="w-3 h-3" />
+                          {donor.location.startsWith("http") ? (
+                          <a 
+                          href={donor.location} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-blue-600 underline ml-1"
+                          >
+                          {donor.location}
+                          </a>
+                          ) : (
+                          <span className="ml-1">{donor.location}</span>
+                          )}
                       </div>
                       <div className="inline-flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-2 rounded-full border border-indigo-200">
                         <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-2"></div>
