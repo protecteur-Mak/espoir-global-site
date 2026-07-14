@@ -355,19 +355,20 @@ export function PartnersContent() {
                         {donor.name}
                       </h3>
                       <div className="flex items-center justify-center">
-                          <MapPin className="w-3 h-3" />
-                          {donor.location.startsWith("http") ? (
-                          <a 
+                      <MapPin className="w-3 h-3" />
+                      {donor.location.startsWith("http") ? (
+                        <a 
                           href={donor.location} 
                           target="_blank" 
                           rel="noopener noreferrer" 
                           className="text-blue-600 underline ml-1"
-                          >
-                          {donor.location}
-                          </a>
-                          ) : (
-                          <span className="ml-1">{donor.location}</span>
-                          )}
+                        >
+                          {/* On retire le protocole pour l'affichage */}
+                          {donor.location.replace(/^https?:\/\//, '')}
+                        </a>
+                      ) : (
+                        <span className="ml-1">{donor.location}</span>
+                           )}
                       </div>
                       <div className="inline-flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-2 rounded-full border border-indigo-200">
                         <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-2"></div>
