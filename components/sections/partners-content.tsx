@@ -41,7 +41,7 @@ const donors: Donor[] = [
     id: "TogoMarket", // Un identifiant unique sans espace
     name: "TogoMarket", // Nom à afficher
     image: "/images/team/TogoMarket.png", // Le chemin vers sa photo déposée dans ton dossier public
-    location: "https://togomarket.site", // Sa ville ou son pays
+    location: "togomarket.site", // Sa ville ou son pays
     whatsapp: "22870703131", // Son numéro WhatsApp sans le "+" ni d'espace
     phone: "+228 70 70 31 31", // Son numéro affiché au clic
     badge: "⭐ VIP",
@@ -52,7 +52,7 @@ const donors: Donor[] = [
     id: "FONDATION ALODO", // Un identifiant unique sans espace
     name: "FONDATION ALODO", // Nom à afficher
     image: "/images/team/FONDATION ALODO.png", // Le chemin vers sa photo déposée dans ton dossier public
-    location: "https://fondation-alodo.netlify.app", // Sa ville ou son pays
+    location: "fondation-alodo.netlify.app", // Sa ville ou son pays
     whatsapp: "22890027310", // Son numéro WhatsApp sans le "+" ni d'espace
     phone: "+228 90 02 73 10", // Son numéro affiché au clic
     badge: "⭐ VIP",
