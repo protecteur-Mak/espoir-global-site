@@ -37,18 +37,7 @@ type Donor = {
 };
 
 const donors: Donor[] = [
-  {
-    id: "baba-emmaus",
-    name: "Prophète BABA Emmaüs",
-    image: "/images/team/baba-emmaus.png",
-    location: "Congo Brazzaville",
-    whatsapp: "242053673206",
-    phone: "+242 05 367 32 06",
-    badge: "⭐ VIP",
-    badgeColor: "from-yellow-400 to-yellow-600",
-    accentColor: "from-indigo-500/10 to-purple-500/10",
-  },
-  {
+   {
     id: "TogoMarket", // Un identifiant unique sans espace
     name: "TogoMarket", // Nom à afficher
     image: "/images/team/TogoMarket.png", // Le chemin vers sa photo déposée dans ton dossier public
