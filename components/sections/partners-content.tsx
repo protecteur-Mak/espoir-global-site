@@ -16,6 +16,7 @@ import {
   MessageCircle,
   Mail,
   MapPin,
+  Globe,
   Phone,
   X,
 } from "lucide-react";
