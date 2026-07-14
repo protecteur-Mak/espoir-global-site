@@ -355,20 +355,31 @@ export function PartnersContent() {
                         {donor.name}
                       </h3>
                       <div className="flex items-center justify-center">
-                      <MapPin className="w-3 h-3" />
-                      {donor.location.startsWith("http") ? (
-                        <a 
-                          href={donor.location} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-blue-600 underline ml-1"
-                        >
-                          {/* On retire le protocole pour l'affichage */}
-                          {donor.location.replace(/^https?:\/\//, '')}
-                        </a>
-                      ) : (
-                        <span className="ml-1">{donor.location}</span>
-                           )}
+  <MapPin className="w-3 h-3" />
+  {donor.location ? (
+    // On vérifie si c'est un lien (commence par http OU contient un point "." pour les domaines simples comme togomarket.site)
+    donor.location.toLowerCase().startsWith("http") || donor.location.includes(".") ? (
+      <a
+        // Si l'adresse ne commence pas par http, on lui ajoute "https://" pour que la redirection externe fonctionne
+        href={
+          donor.location.toLowerCase().startsWith("http")
+            ? donor.location
+            : `https://${donor.location}`
+        }
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline ml-1 hover:text-blue-800"
+      >
+        {/* On nettoie l'affichage pour ne pas encombrer l'écran avec le protocole */}
+        {donor.location.replace(/^(https?:\/\/)?(www\.)?/i, '')}
+      </a>
+    ) : (
+      // Si c'est juste du texte brut (ex: "Lomé, Togo"), on l'affiche normalement
+      <span className="ml-1">{donor.location}</span>
+    )
+  ) : (
+    <span className="ml-1 text-gray-400 italic">Non renseignée</span>
+  )}
                       </div>
                       <div className="inline-flex items-center bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-2 rounded-full border border-indigo-200">
                         <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-2"></div>
