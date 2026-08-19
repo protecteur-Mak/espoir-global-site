@@ -80,8 +80,8 @@ export async function POST(request: NextRequest) {
           
           <div style="color: #6b7280; font-size: 14px;">
             <p><strong>Espoir Global</strong></p>
-            <p>15 Rue de l'Espoir, 75001 Paris</p>
-            <p>Téléphone: +33 1 23 45 67 89</p>
+            <p>Aneho Qt Jéricho, Préfecture des Lacs, TOGO</p>
+            <p>Téléphone: +228 91 16 49 52</p>
             <p>Email: contact@espoirglobal.org</p>
           </div>
         </div>
