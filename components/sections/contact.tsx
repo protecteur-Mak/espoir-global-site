@@ -232,7 +232,7 @@ export function ContactSection() {
                   <Mail className="text-indigo-700 md:text-indigo-600 mt-1 mr-4 w-5 h-5 flex-shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="text-base md:text-lg font-medium md:font-semibold md:text-gray-800 md:group-hover:text-indigo-600 md:transition-colors break-words">
-                      <span className="block">contact@espoir-global.org</span>
+                      <span className="block">contact@espoirglobal.org</span>
                     </p>
                     <p className="text-sm text-gray-500 md:text-gray-600">
                       Pour toute question générale
