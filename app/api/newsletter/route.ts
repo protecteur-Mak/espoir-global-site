@@ -2,7 +2,7 @@ import { Resend } from "resend"
 import { type NextRequest, NextResponse } from "next/server"
 import { newsletterSchema } from "@/lib/schemas"
 
-const RESEND_API_KEY = "re_VyvPDzQt_2JJC3rZ7kd49Cue62SLaPzdJ"
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const resend = new Resend(RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
           <div style="padding: 20px; background-color: #f9fafb; border-radius: 0 0 8px 8px; text-align: center;">
             <p style="color: #6b7280; font-size: 14px; margin: 0;">
               <strong>Espoir Global</strong><br>
-              15 Rue de l'Espoir, 75001 Paris<br>
+              Aneho Qt Jéricho, Préfecture des Lacs, TOGO<br>
               contact@espoirglobal.org
             </p>
           </div>
