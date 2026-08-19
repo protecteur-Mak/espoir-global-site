@@ -2,7 +2,7 @@ import { Resend } from "resend"
 import { type NextRequest, NextResponse } from "next/server"
 import { contactFormSchema } from "@/lib/schemas"
 
-const RESEND_API_KEY = "re_VyvPDzQt_2JJC3rZ7kd49Cue62SLaPzdJ"
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const resend = new Resend(RESEND_API_KEY) 
 
 export async function POST(request: NextRequest) {
