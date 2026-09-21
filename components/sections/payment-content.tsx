@@ -150,7 +150,7 @@ export function PaymentContent() {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-xl">1. Choisissez votre montant : Votre don aide Espoir Global à soutenir des veuves, des orphelins et des personnes vulnérables. Même 1000 FCFA *(environ 2 $)* peut contribuer à faire la différence.</CardTitle>
+            <CardTitle className="text-xl">1. Choisissez votre montant : Votre don aide Espoir Global à soutenir des veuves, des orphelins et des personnes vulnérables. Même 1000 FCFA (environ 2 $) peut contribuer à faire la différence. Merci pour votre générosité.</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
