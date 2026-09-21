@@ -61,7 +61,7 @@ export function PaymentContent() {
   const EURTOXOF = 655;
   const finalAmount = selectedAmount || Number.parseFloat(customAmount) || 0;
   const finalAmountXOF = Math.round(finalAmount * EURTOXOF);
-  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500, 1000];
+  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500, 900];
 
   useEffect(() => {
     const amount = new URLSearchParams(window.location.search).get("amount");
