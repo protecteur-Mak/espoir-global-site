@@ -94,7 +94,7 @@ export function SupportSection() {
                     onClick={() => handleAmountSelect(item.amount, "one-time")}
                   >
                     <div className="text-lg md:text-2xl font-bold text-indigo-700 mb-1">
-                      {item.amount}€
+                      {item.amount}$
                     </div>
                     <div className="text-xs md:text-sm font-medium text-gray-700 mb-1">
                       {item.label}
