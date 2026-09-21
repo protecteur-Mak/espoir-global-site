@@ -132,7 +132,7 @@ export function SupportSection() {
                     onClick={() => handleAmountSelect(item.amount, "monthly")}
                   >
                     <div className="text-lg md:text-2xl font-bold text-indigo-700 mb-1">
-                      {item.amount}€
+                      {item.amount}$
                     </div>
                     <div className="text-xs md:text-sm font-medium text-gray-700 mb-1">
                       {item.label}
@@ -175,7 +175,7 @@ export function SupportSection() {
                     onClick={() => handleAmountSelect(35, "sponsorship")}
                   >
                     <div className="text-2xl md:text-3xl font-bold text-indigo-700 mb-1">
-                      35€
+                      35$
                     </div>
                     <div className="text-sm text-gray-600">par mois</div>
                   </div>
@@ -183,7 +183,7 @@ export function SupportSection() {
 
                 <div className="bg-gray-50 rounded-lg p-4 md:p-6">
                   <p className="text-sm md:text-base text-gray-700 mb-4 text-center">
-                    Avec 35€ par mois, vous changez la vie d'un enfant en lui
+                    Avec 35$ par mois, vous changez la vie d'un enfant en lui
                     offrant:
                   </p>
 
