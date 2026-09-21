@@ -119,15 +119,15 @@ export function TransparencySection() {
             <div className="text-center">
               <div className="relative w-full max-w-xs mx-auto mb-6">
                 <Image
-                  src="/images/certifications/certificate-badge.png"
-                  alt="Certification officielle Espoir Global"
+                  src="/images/certifications/certificate-badge-pending.png"
+                  alt="Certification officielle Espoir Global encours de validation  "
                   width={300}
                   height={300}
                   className="w-full h-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-300 hover:scale-105 transform transition-transform"
                 />
               </div>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Nous sommes certifiés par les organismes de contrôle les plus exigeants pour garantir la transparence et
+                Nous sommes encours de certification par les organismes de contrôle les plus exigeants pour garantir la transparence et
                 l'efficacité de nos actions humanitaires.
               </p>
               <div className="mt-4 inline-flex items-center bg-yellow-50 px-4 py-2 rounded-full border border-yellow-200">
