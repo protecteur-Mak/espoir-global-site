@@ -70,7 +70,7 @@ export function TestimonialsContent() {
       id: "5",
       name: "Aminata Keita",
       age: 38,
-      location: "Tabligbo, Togo",
+      location: "Yopougon, Côte d'Ivoire",
       category: "Commerce",
       story:
         "Après avoir perdu mon mari, je me suis retrouvée seule avec cinq enfants. Le marché était ma seule option, mais je n'avais pas de capital. Grâce au soutien reçu, j'ai pu acheter des marchandises en gros. Aujourd'hui, mon commerce prospère et mes enfants ont un avenir.",
