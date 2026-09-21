@@ -97,19 +97,19 @@ export function PartnersContent() {
 
   const impactLevels = [
     {
-      amount: "100€",
+      amount: "100$",
       frequency: "par semaine",
       impact: "Soutient 5 familles complètes",
       color: "bg-yellow-500",
     },
     {
-      amount: "200€",
+      amount: "200$",
       frequency: "par semaine",
       impact: "Finance l'éducation de 10 enfants",
       color: "bg-orange-500",
     },
     {
-      amount: "500€",
+      amount: "500$",
       frequency: "par mois",
       impact: "Construit un avenir pour 25 orphelins",
       color: "bg-red-500",
