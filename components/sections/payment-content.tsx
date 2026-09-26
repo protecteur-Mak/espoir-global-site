@@ -151,7 +151,7 @@ export function PaymentContent() {
         {/* Bannière visuelle (Image 2) à la place du texte */}
 <div className="mb-8 overflow-hidden rounded-xl shadow-md">
   <Image
-    src="/images/banner-espoir.jpg" 
+    src="/images/banner-espoir.png" 
     alt="Faites un don - Espoir Global"
     width={800}
     height={450}
