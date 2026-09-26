@@ -148,53 +148,63 @@ export function PaymentContent() {
           </Link>
         </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl">1. Choisissez votre montant : Votre don aide Espoir Global à soutenir des veuves, des orphelins et des personnes vulnérables. Même 1000 FCFA (environ 2 $) peut contribuer à faire la différence. Merci pour votre générosité.</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
-              {predefinedAmounts.map((amount) => (
-                <Button
-                  key={amount}
-                  variant={selectedAmount === amount ? "default" : "outline"}
-                  className="h-16 text-lg font-semibold"
-                  onClick={() => {
-                    setSelectedAmount(amount);
-                    setCustomAmount("");
-                  }}
-                >
-                  {amount}$
-                </Button>
-              ))}
-            </div>
+        {/* Bannière visuelle (Image 2) à la place du texte */}
+<div className="mb-8 overflow-hidden rounded-xl shadow-md">
+  <Image
+    src="/images/banner-espoir.jpg" 
+    alt="Faites un don - Espoir Global"
+    width={800}
+    height={450}
+    className="w-full h-auto object-cover"
+    priority
+  />
+</div>
 
-            <div className="space-y-2">
-              <Label htmlFor="custom-amount">Montant personnalisé ($)</Label>
-              <Input
-                id="custom-amount"
-                type="number"
-                placeholder="Entrez votre montant"
-                value={customAmount}
-                onChange={(e) => {
-                  setCustomAmount(e.target.value);
-                  setSelectedAmount(null);
-                }}
-              />
-            </div>
+{/* Section des boutons de sélection de montants */}
+<Card className="mb-8">
+  <CardContent className="space-y-6 pt-6">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
+      {predefinedAmounts.map((amount) => (
+        <Button
+          key={amount}
+          variant={selectedAmount === amount ? "default" : "outline"}
+          className="h-16 text-lg font-semibold"
+          onClick={() => {
+            setSelectedAmount(amount);
+            setCustomAmount("");
+          }}
+        >
+          {amount}$
+        </Button>
+      ))}
+    </div>
 
-            {finalAmount > 0 && (
-              <div className="bg-indigo-50 p-4 rounded-lg">
-                <p className="text-lg font-semibold text-indigo-700">
-                  Montant sélectionné : {finalAmount}$
-                </p>
-                {donationType === "monthly" && <p className="text-sm text-indigo-600">par mois</p>}
-                {donationType === "weekly" && <p className="text-sm text-indigo-600">par semaine</p>}
-                {donationType === "sponsorship" && <p className="text-sm text-indigo-600">par mois (parrainage)</p>}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+    <div className="space-y-2">
+      <Label htmlFor="custom-amount">Montant personnalisé ($)</Label>
+      <Input
+        id="custom-amount"
+        type="number"
+        placeholder="Entrez votre montant"
+        value={customAmount}
+        onChange={(e) => {
+          setCustomAmount(e.target.value);
+          setSelectedAmount(null);
+        }}
+      />
+    </div>
+
+    {finalAmount > 0 && (
+      <div className="bg-indigo-50 p-4 rounded-lg">
+        <p className="text-lg font-semibold text-indigo-700">
+          Montant sélectionné : {finalAmount}$
+        </p>
+        {donationType === "monthly" && <p className="text-sm text-indigo-600">par mois</p>}
+        {donationType === "weekly" && <p className="text-sm text-indigo-600">par semaine</p>}
+        {donationType === "sponsorship" && <p className="text-sm text-indigo-600">par mois (parrainage)</p>}
+      </div>
+    )}
+  </CardContent>
+</Card>
 
         <Card className="mb-8">
           <CardHeader>
