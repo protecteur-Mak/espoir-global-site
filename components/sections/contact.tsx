@@ -267,6 +267,22 @@ export function ContactSection() {
               </div>
             </div>
 
+            {/* Bannière Chaîne WhatsApp */}
+            <div className="text-center my-6">
+              <a
+                href="https://whatsapp.com/channel/0029Vb90JIO8PgsKPB0kkl3G"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block transition-transform hover:scale-[1.02]"
+              >
+                <img
+                  src="/chaine-whatsapp-image.png" 
+                  alt="Rejoignez notre chaîne WhatsApp"
+                  className="mx-auto rounded-xl shadow-md max-w-full h-auto w-full"
+                />
+              </a>
+            </div>
+
             {/* Social Media */}
             <div className="bg-white p-6 md:p-10 rounded-lg md:rounded-2xl shadow-sm md:shadow-xl md:border md:border-gray-100">
               <div className="text-center mb-6 md:mb-8">
