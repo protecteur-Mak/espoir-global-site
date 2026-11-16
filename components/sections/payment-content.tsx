@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,7 +44,7 @@ function TabImage({
 }
 
 export function PaymentContent() {
-  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(5000);
   const [customAmount, setCustomAmount] = useState("");
   const [donationType, setDonationType] = useState("one-time");
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -52,20 +52,19 @@ export function PaymentContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   
-  // Nouveaux états pour le téléphone et le pays obligatoires
+  // États pour le téléphone et le pays obligatoires
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("tg");
 
   const { toast } = useToast();
 
-  const EURTOXOF = 655;
   const finalAmount = selectedAmount || Number.parseFloat(customAmount) || 0;
-  const finalAmountXOF = Math.round(finalAmount * EURTOXOF);
-  const predefinedAmounts = [2, 5, 10, 20, 50, 100, 200, 300, 500, 900];
+  const predefinedAmounts = [1000, 2000, 5000, 10000, 25000, 50000, 100000];
 
   useEffect(() => {
-    const amount = new URLSearchParams(window.location.search).get("amount");
-    const type = new URLSearchParams(window.location.search).get("type");
+    const queryParams = new URLSearchParams(window.location.search);
+    const amount = queryParams.get("amount");
+    const type = queryParams.get("type");
     if (amount) setSelectedAmount(Number.parseInt(amount));
     if (type) setDonationType(type);
   }, []);
@@ -77,12 +76,12 @@ export function PaymentContent() {
   };
 
   const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+    e.preventDefault();
 
     if (finalAmount <= 0) {
       toast({
         title: "Montant invalide",
-        description: "Veuillez choisir ou entrer un montant pour votre don.",
+        description: "Veuillez choisir ou entrer un montant valide en F CFA.",
         variant: "destructive",
       });
       return;
@@ -104,12 +103,12 @@ export function PaymentContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalAmountXOF,
+          amount: finalAmount,
           currency: "XOF",
           description: "Don pour Espoir Global",
           customer_email: "donateur@espoir-global.org",
           customer_phone_number: cleanPhone,
-          // Optionnel: on peut adapter dynamiquement le pays si nécessaire dans ton api
+          country: countryCode,
         }),
       });
 
@@ -148,63 +147,65 @@ export function PaymentContent() {
           </Link>
         </div>
 
-        {/* Bannière visuelle (Image 2) à la place du texte */}
-<div className="mb-8 overflow-hidden rounded-xl shadow-md">
-  <Image
-    src="/images/banner-espoir.png" 
-    alt="Faites un don - Espoir Global"
-    width={800}
-    height={450}
-    className="w-full h-auto object-cover"
-    priority
-  />
-</div>
+        <div className="mb-8 overflow-hidden rounded-xl shadow-md">
+          <Image
+            src="/images/banner-espoir.png" 
+            alt="Faites un don - Espoir Global"
+            width={800}
+            height={450}
+            className="w-full h-auto object-cover"
+            priority
+          />
+        </div>
 
-{/* Section des boutons de sélection de montants */}
-<Card className="mb-8">
-  <CardContent className="space-y-6 pt-6">
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
-      {predefinedAmounts.map((amount) => (
-        <Button
-          key={amount}
-          variant={selectedAmount === amount ? "default" : "outline"}
-          className="h-16 text-lg font-semibold"
-          onClick={() => {
-            setSelectedAmount(amount);
-            setCustomAmount("");
-          }}
-        >
-          {amount}$
-        </Button>
-      ))}
-    </div>
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-xl">1. Choisissez votre montant (F CFA)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {predefinedAmounts.map((amount) => (
+                <Button
+                  key={amount}
+                  variant={selectedAmount === amount ? "default" : "outline"}
+                  className="h-14 text-base font-semibold"
+                  onClick={() => {
+                    setSelectedAmount(amount);
+                    setCustomAmount("");
+                  }}
+                >
+                  {amount.toLocaleString()} F
+                </Button>
+              ))}
+            </div>
 
-    <div className="space-y-2">
-      <Label htmlFor="custom-amount">Montant personnalisé ($)</Label>
-      <Input
-        id="custom-amount"
-        type="number"
-        placeholder="Entrez votre montant"
-        value={customAmount}
-        onChange={(e) => {
-          setCustomAmount(e.target.value);
-          setSelectedAmount(null);
-        }}
-      />
-    </div>
+            <div className="space-y-2">
+              <Label htmlFor="custom-amount">Montant personnalisé (F CFA)</Label>
+              <Input
+                id="custom-amount"
+                type="number"
+                min="100"
+                step="100"
+                placeholder="Ex: 15000"
+                value={customAmount}
+                onChange={(e) => {
+                  setCustomAmount(e.target.value);
+                  setSelectedAmount(null);
+                }}
+              />
+            </div>
 
-    {finalAmount > 0 && (
-      <div className="bg-indigo-50 p-4 rounded-lg">
-        <p className="text-lg font-semibold text-indigo-700">
-          Montant sélectionné : {finalAmount}$
-        </p>
-        {donationType === "monthly" && <p className="text-sm text-indigo-600">par mois</p>}
-        {donationType === "weekly" && <p className="text-sm text-indigo-600">par semaine</p>}
-        {donationType === "sponsorship" && <p className="text-sm text-indigo-600">par mois (parrainage)</p>}
-      </div>
-    )}
-  </CardContent>
-</Card>
+            {finalAmount > 0 && (
+              <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
+                <p className="text-lg font-semibold text-emerald-800">
+                  Montant sélectionné : {finalAmount.toLocaleString()} F CFA
+                </p>
+                {donationType === "monthly" && <p className="text-sm text-emerald-700">par mois</p>}
+                {donationType === "weekly" && <p className="text-sm text-emerald-700">par semaine</p>}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <Card className="mb-8">
           <CardHeader>
@@ -227,7 +228,7 @@ export function PaymentContent() {
                   fallback={
                     <span className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                       <Smartphone className="w-5 h-5 text-orange-500" />
-                      Mobile
+                      Mobile Money
                     </span>
                   }
                 />
@@ -258,13 +259,12 @@ export function PaymentContent() {
             {activeTab === "mobile" ? (
               <div className="space-y-4">
                 <div className="text-center p-6">
-                  <Smartphone className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-4">
-                    Mobile Money / WAVE / Carte Bancaire
+                  <Smartphone className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    Mobile Money / FedaPay / Carte Bancaire
                   </h3>
-                  <p className="text-gray-600 mb-6">
-                    Paiement sécurisé via Mobile Money, Wallet WAVE ou carte bancaire.
-                    Transaction rapide et sécurisée.
+                  <p className="text-gray-600 mb-6 text-sm">
+                    Paiement sécurisé via Mobile Money (Togocom, Moov) ou carte bancaire en Francs CFA.
                   </p>
                 </div>
 
@@ -284,7 +284,7 @@ export function PaymentContent() {
                       }
                     }}
                   >
-                    Payer maintenant {finalAmount}$
+                    Payer {finalAmount.toLocaleString()} F CFA
                   </Button>
                 </div>
               </div>
@@ -300,7 +300,7 @@ export function PaymentContent() {
                       className="mx-auto mb-4"
                     />
                     <p className="text-sm text-gray-600 mb-4">
-                      Scannez ce QR code avec votre app PayPal
+                      Scannez ce QR code avec votre application PayPal
                     </p>
                   </div>
 
@@ -335,20 +335,19 @@ export function PaymentContent() {
           </CardContent>
         </Card>
 
-        {/* 🎯 Boîte de dialogue intégrant le choix de l'indicatif pays et le numéro de téléphone */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-center text-lg font-bold">Confirmation du don</DialogTitle>
               <DialogDescription className="text-center text-base pt-2">
-                Vous êtes en train de faire un don de <strong className="text-indigo-600 text-lg">{finalAmount}$</strong>.
+                Vous allez effectuer un don de <strong className="text-emerald-600 text-lg">{finalAmount.toLocaleString()} F CFA</strong>.
               </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handlePayment} className="space-y-4 pt-4">
               <div className="space-y-2">
                 <Label htmlFor="dialog-phone" className="font-medium text-sm">
-                  Numéro de téléphone (Requis par la passerelle de paiement)
+                  Numéro de téléphone Mobile Money
                 </Label>
                 <div className="flex gap-2">
                   <div className="w-1/3">
@@ -396,7 +395,7 @@ export function PaymentContent() {
                   className="flex-1 bg-orange-500 hover:bg-orange-600 h-12 text-white font-semibold"
                   disabled={loadingPayment || phone.trim().length < 8}
                 >
-                  {loadingPayment ? "Chargement..." : "Continuer"}
+                  {loadingPayment ? "Chargement..." : "Payer"}
                 </Button>
               </div>
             </form>
@@ -413,4 +412,4 @@ export default function PaymentContentWithSuspense() {
       <PaymentContent />
     </Suspense>
   );
-}           
+  }
