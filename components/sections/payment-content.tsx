@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Smartphone, CheckCircle, Copy } from "lucide-react";
+import { ArrowLeft, Smartphone, CheckCircle, Copy, Loader2, AlertCircle } from "lucide-react";
 import { FaPaypal } from "react-icons/fa";
 import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
@@ -52,7 +52,27 @@ export function PaymentContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   
-  // États pour le téléphone et le pays obligatoires
+  // 🔄 Gestion de la rotation des bannières (toutes les 5 secondes)
+  const banners = [
+    "/images/banner-espoir.png",
+    "/images/banner-espoir-2.png", // Assurez-vous d'ajouter cette deuxième image dans /public/images/
+  ];
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  useEffect(() => {
+    const bannerInterval = setInterval(() => {
+      setCurrentBannerIndex((prevIndex) => (prevIndex + 1) % banners.length);
+    }, 5000); // 5000 ms = 5 secondes
+
+    return () => clearInterval(bannerInterval);
+  }, [banners.length]);
+
+  // États pour la vérification post-redirection du Webhook
+  const [verifying, setVerifying] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+
+  // Téléphone et pays
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("tg");
 
@@ -65,9 +85,37 @@ export function PaymentContent() {
     const queryParams = new URLSearchParams(window.location.search);
     const amount = queryParams.get("amount");
     const type = queryParams.get("type");
+    const txId = queryParams.get("id") || queryParams.get("transaction_id");
+
     if (amount) setSelectedAmount(Number.parseInt(amount));
     if (type) setDonationType(type);
+
+    if (txId) {
+      verifyTransactionWithBackend(txId);
+    }
   }, []);
+
+  const verifyTransactionWithBackend = async (txId: string) => {
+    setVerifying(true);
+    setVerificationError(null);
+
+    try {
+      const response = await fetch(`/api/verify-payment?id=${txId}`);
+      const data = await response.json();
+
+      if (data.success && data.status === "approved") {
+        setSuccess(true);
+      } else {
+        setVerificationError("Le paiement n'a pas été confirmé ou encaissé par le serveur. Aucun don validé.");
+        setSuccess(false);
+      }
+    } catch (err) {
+      console.error("Erreur de vérification:", err);
+      setVerificationError("Impossible de vérifier l'encaissement auprès du serveur.");
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const copyToClipboard = async (text: string, field: string) => {
     await navigator.clipboard.writeText(text);
@@ -135,6 +183,49 @@ export function PaymentContent() {
     }
   };
 
+  if (verifying) {
+    return (
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-xl text-center bg-white rounded-2xl shadow-xl p-8">
+          <Loader2 className="w-12 h-12 text-emerald-600 animate-spin mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-gray-800">Vérification de l'encaissement...</h2>
+          <p className="text-gray-600 text-sm mt-2">
+            Nous attendons la confirmation du webhook serveur avant d'afficher votre reçu de don.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (success) {
+    return (
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-xl bg-white rounded-2xl shadow-xl p-8 text-center">
+          <CheckCircle className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-emerald-800 mb-2">Merci pour votre don !</h2>
+          <p className="text-gray-700 text-sm mb-4">
+            Le paiement a été confirmé et encaissé avec succès par notre système.
+          </p>
+          <div className="bg-emerald-50 p-4 rounded-xl mb-6">
+            <p className="text-emerald-900 font-bold text-lg">
+              Montant reçu : {finalAmount.toLocaleString()} F CFA
+            </p>
+          </div>
+          <Button
+            onClick={() => {
+              setSuccess(false);
+              setPhone("");
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3"
+          >
+            Effectuer un autre don
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-6 md:py-16 pb-20 md:pb-16">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -147,13 +238,22 @@ export function PaymentContent() {
           </Link>
         </div>
 
-        <div className="mb-8 overflow-hidden rounded-xl shadow-md">
+        {verificationError && (
+          <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 p-4 rounded-xl text-red-700 text-sm">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span>{verificationError}</span>
+          </div>
+        )}
+
+        {/* 🖼️ Affichage dynamique de la bannière en rotation */}
+        <div className="mb-8 overflow-hidden rounded-xl shadow-md transition-all duration-500">
           <Image
-            src="/images/banner-espoir.png" 
+            key={banners[currentBannerIndex]}
+            src={banners[currentBannerIndex]} 
             alt="Faites un don - Espoir Global"
             width={800}
             height={450}
-            className="w-full h-auto object-cover"
+            className="w-full h-auto object-cover transition-opacity duration-500"
             priority
           />
         </div>
